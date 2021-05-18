@@ -1,1 +1,1 @@
-# Octave-matlab
+# GNU Octave
