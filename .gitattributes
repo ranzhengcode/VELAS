@@ -1,6 +1,6 @@
-**/*.m linguist-language=(GNU Octave/MATLAB)
+*.m linguist-language=(GNU Octave/MATLAB)
 
-**/*.m linguist-vendored=false
-**/*.m linguist-generated=false
-**/*.m linguist-documentation=false
-**/*.m linguist-detectable=true 
+*.m linguist-vendored=false
+*.m linguist-generated=false
+*.m linguist-documentation=false
+*.m linguist-detectable=true 
