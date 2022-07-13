@@ -1,6 +1,1 @@
-*.m linguist-language=GNUOctave/MATLAB
 
-*.m linguist-vendored=true
-*.m linguist-generated=true
-*.m linguist-documentation=true
-*.m linguist-detectable=true 
