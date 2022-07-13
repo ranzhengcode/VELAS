@@ -1,0 +1,33 @@
+
+# Elements of stiffness matrix C (GPa) or Compliance matrix S (GPa^-1), non-zero elements or all elements
+# Ref.: Science, 1992, 257, 650-652, Doi:10.1126/science.257.5070.650
+
+# Elements of stiffness matrix C, non-zero elements or all elements
+tetr 59.4 42.4 67.2 25.7 3.8 -4.4
+
+# External isostatic pressure of crystal (GPa), default:0 GPa
+pressure 0.00
+
+nmesh3d 200.00 400.00 360.00 # 3D mesh number of theta(θ), phi(φ), chi (χ)
+
+# properties — Pro(2*8)
+properties
+1 1 1 1 1 1 1 1	
+1 1 1 1 1 1 1 1		
+
+# Offline mode or Online mode to call Materials Project, the value is "no" (default)/"yes"
+mponline no
+
+# Indicating which version of API to use, [New]: next-gen.materialsproject.org. [Legacy]: materialsproject.org
+mpapiver new
+
+# The model and input parameters  of fracture toughness
+# Input parameters of fracture toughness, the order: V0 gEFr m n XA XB
+KIC M IC 0.00 0.00 0.00 0.00 0.00 0.00
+
+# Map Projection or not? (default: Yes) % {'Gall-Peters' (GP),'Robinson' (R),'Hammer-Aitoff' (HA),'Mollweide' (M)};
+map yes M
+
+# line style
+lstyle --
+

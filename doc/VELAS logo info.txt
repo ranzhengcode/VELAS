@@ -1,0 +1,18 @@
+
+ +---------------------------------------------------------+
+ |                                                         |
+ |     V       V  EEEEEEE  L            A      SSSSSSS     |
+ |      V     V   E        L           A A     S           |
+ |       V   V    EEEEEEE  L          AAAAA    SSSSSSS     |
+ |        V V     E        L         A     A         S     |
+ |         V      EEEEEEE  LLLLLLL  A       A  SSSSSSS     |
+ |                                                         |
+ |                  VELAS version 1.0.0                    |
+ |                   Author: Zheng Ran                     |
+ |               Email:ranzheng@outlook.com                |
+ |                                                         |
+ | If you use VELAS in your resarch, please cite:          |
+ |                                                         |
+ | "VELAS: An open-source toolbox for visualization and    |
+ |           analysis of elastic anisotropy"               |
+ +---------------------------------------------------------+

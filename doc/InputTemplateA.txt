@@ -1,0 +1,79 @@
+
+# Elements of stiffness matrix C (GPa) or Compliance matrix S (GPa^-1), non-zero elements or all elements
+# Ref.: Journal of Modern Physics, 2018, 9, 775-805 
+Cfull
+496.34       93.982        50.24            0            0            0
+93.982       496.34        50.24            0            0            0
+50.24        50.24         533.13           0            0            0
+0            0             0                157.5        0            0
+0            0             0                0            157.5        0
+0            0             0                0            0            201.17
+
+# External isostatic pressure of crystal (GPa), default:0 GPa
+pressure 0.00
+
+# 3D mesh number of theta(θ), phi(φ), chi (χ)
+nmesh3d 200.00 400.00 360.00
+
+# 2D mesh number of theta(θ)
+nmesh2d 400.00
+
+# Precision control, Less than teps will be considered equal to 0
+teps 1.0e-06
+
+# properties — Pro(2*8)
+#               Young   Compressibility  Shear   Poisson   Bulk   Pugh ratio     Hardness     Fracture Toughness
+#    3D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
+#    2D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
+properties
+1 1 1 1 1 1 1 1	
+1 1 1 1 1 1 1 1	
+
+# Offline mode or Online mode to call Materials Project, the value is "yes" (default)/"no"
+# Note: In offline mode, it's no need to provide x-api-key, both MPID and Pretty Formula are supported; 
+# In online mode, x-api-key must be provided, and only MPID query is supported
+mponline no
+
+# The Material ID for Materials Project, the value is "none"/"mp-xxxx"/"mvc-xxxx", such as "mp-7631","mvc-6281",and "none" (default).
+mpid none
+
+# The X-Api-Key for Materials Projec. tVelas provides offline mode and online mode to call API, the value is "none" or your personal access api
+xapikey none
+
+# Indicating which version of API to use, [New]: next-gen.materialsproject.org. [Legacy]: materialsproject.org
+# "new" refers to new version api (default), "old"/"legacy" refers to legacy version api
+mpapiver new
+
+# The model of Vickers hardness, 'Hv M' for Mazhnik's model, 'Hv C' for Chen's model, 'Hv C' for Tian's model
+Hv M
+
+# The model and input parameters  of fracture toughness, Kic Model materials: Model -> M (Mazhnik's model)/ N (Niu's model), materials -> IC(ionic or covalent) / PM (pure metals) / IM (intermetallics)
+# Input parameters of fracture toughness, the order: V0 gEFr m n XA XB (Notes: If you want to calulate fracture toughness, all parameters should be provided!)
+KIC M IC 0.0 0.0 0.0 0.0 0.0 0.0
+
+# Do you want to output the average value？ (avg yes or avg no), default: avgno.
+avg no
+
+# Colormap: 'jet','rainbow','hot', ocean','hsv','cool','spring','summer','autumn','winter','gray','bone','copper','pink','viridis','cubehelix'
+cmap hot
+
+# 3D Unit Spherical or not? (unitsph yes or unitsph no), default: No
+unitsph no
+
+# Map Projection or not? (default: Yes) % {'Gall-Peters' (GP),'Robinson' (R),'Hammer-Aitoff' (HA),'Mollweide' (M)};
+map yes M
+
+# line style
+lstyle --
+
+# print or not? (print yes or print no), default: No
+print no
+
+# dpi
+dpi 600
+
+# Plane to be calculated [XYZ coordinates]
+planeXY
+ 1.00	 0.00	 0.00	
+ 0.00	 1.00	 0.00	
+ 0.00	 0.00	 1.00	
