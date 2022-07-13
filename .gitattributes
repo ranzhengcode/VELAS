@@ -1,1 +1,2 @@
 *.m linguist-language=Octave/MATLAB
+*.m linguist-vendored=true
