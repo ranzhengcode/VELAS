@@ -5,7 +5,12 @@
 
 [VELAS Manual, PDF](https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS%20Manual.pdf)
 
-## FEATURES
+## Highlights
+- Easy to install and use, no compilation required and no dependence on any third-party libraries.
+- A fully interactive graphical interactive interface (**GUI**).
+- Support for a wide range of visualisation schemes such as map projection and unit sphere projection.
+- Support for analysis of properties such as hardness, fracture toughness, average Cauchy pressure, areal Poisson’s ratio, etc.
+- Provides a native interface for calling data from the new (default) and legacy APIs of the Materials Project's database.
 
 ## Graphical User Interface (GUI)
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_GUI.png" width="481" height="785"></img></div>
