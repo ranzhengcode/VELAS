@@ -10,8 +10,14 @@
 ## Graphical User Interface (GUI)
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_GUI.png" width="481" height="785"></img></div>
 
-## INSTALL
-
+## INSTALL  
+- (1) Unzip the downloaded **VELAS** archive into any available path;  
+- (2) Start GNU Octave and click on the **Edit** option in the menu bar;  
+- (3) Click on **Set Path** in the **Edit** drop-down box;  
+- (4) Click **Add Folder** in the **Set Path** dialog box;  
+- (5) Click on **Folder with Subfolders** in the **Add Folder** drop-down list box;  
+- (6) In the pop-up dialog box, find the path of the unpacked VELAS folder in **(1)**, and select the VELAS folder, then click **Choose**;  
+- (7) Click **Save** in the **Set Path** dialog box and **Enjoy**!
 ## GET STARTED
 
 ## Languages
