@@ -19,13 +19,13 @@
 - (6) In the pop-up dialog box, find the path of the unpacked VELAS folder in **(1)**, and select the VELAS folder, then click **Choose**;  
 - (7) Click **Save** in the **Set Path** dialog box to complete the installation;
 - (8) **Enjoy**!
-- 
+
 ## GET STARTED
 VELAS supports both **script** and **GUI** to run.  
 - **1**: Run VELAS using **velasScript**.  Type **velasScript** in the **command window** of **GNU Octave** and press **Enter** to run.
 - **2**: Run VELAS using **velasGUI**.  Type **velasGUI** in the **command window** of **GNU Octave** and press **Enter** to run.
 
-##Tested systems
+## Tested systems
 **Windows 10** and **Ubuntu 18.04**.
 
 ## Languages
