@@ -22,4 +22,4 @@ GNU/Linux, BSD, macOS, Windows.
 
 ## Contact Information
 **Email**: ranzheng@outlook.com  
-Please **don't hesitate** to contact us if you have any questions about using VELAS or suggestions for improving **VELAS**.
+Please **don't hesitate** to contact us if you have any questions about **using VELAS** or suggestions for **improving VELAS**.
