@@ -1,5 +1,5 @@
 
-<img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img>
+<div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img></div>
 
 **VELAS** is a user-friendly open-source toolbox for the visualization and analysis of elastic anisotropy written in **GNU Octave** that can be used for any crystal symmetry. 
 
