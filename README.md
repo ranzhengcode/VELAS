@@ -8,7 +8,7 @@
 ## FEATURES
 
 ## Graphical User Interface (GUI)
-<div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_GUI.png" width="602" height="982"></img></div>
+<div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_GUI.png" width="481" height="785"></img></div>
 
 ## INSTALL
 
