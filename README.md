@@ -21,5 +21,5 @@ GUN Octave (Ver. 5.2.0 - latest, Recommended), in full support of MATLAB.
 GNU/Linux, BSD, macOS, Windows.
 
 ## Contact Information
-**Email**: ranzheng@outlook.com
+**Email**: ranzheng@outlook.com  
 Please **don't hesitate** to contact us if you have any questions about using VELAS or suggestions for improving **VELAS**.
