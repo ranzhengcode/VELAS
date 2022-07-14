@@ -24,7 +24,7 @@ VELAS supports both **script** and **GUI** to run.
 - **1**: Run VELAS using **velasScript**.  Type **velasScript** in the **command window** of **GNU Octave** and press **Enter** to run.
 - **2**: Run VELAS using **velasGUI**.  Type **velasGUI** in the **command window** of **GNU Octave** and press **Enter** to run.
 ## Languages
-GUN Octave (Ver. 5.2.0 - latest, Recommended), in full support of MATLAB.
+**GUN Octave** (Ver. 5.2.0 - latest, Recommended), in full support of **MATLAB**.
 
 ## Supported systems
 GNU/Linux, BSD, macOS, Windows.
