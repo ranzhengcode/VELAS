@@ -9,6 +9,7 @@
 - **Easy** to install and use, **no** compilation required and **no** dependence on any third-party libraries.
 - A fully interactive graphical interactive interface (**GUI**).
 - Support for a wide range of visualisation schemes such as **map projection** and **unit sphere projection**.
+- Supports the determination of the mechanical stability of crystals at **atmospheric** and **high pressures** using the **Born mechanical stability criterion**.
 - Support for analysis of properties such as **hardness**, **fracture toughness**, **average Cauchy pressure**, **areal Poisson’s ratio**, etc.
 - Provides a **native interface** for calling data from the new (default) and legacy APIs of the [Materials Project's database](https://next-gen.materialsproject.org/).
 
