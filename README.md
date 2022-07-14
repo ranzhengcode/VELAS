@@ -17,7 +17,8 @@
 - (4) Click **Add Folder** in the **Set Path** dialog box;  
 - (5) Click on **Folder with Subfolders** in the **Add Folder** drop-down list box;  
 - (6) In the pop-up dialog box, find the path of the unpacked VELAS folder in **(1)**, and select the VELAS folder, then click **Choose**;  
-- (7) Click **Save** in the **Set Path** dialog box and **Enjoy**!
+- (7) Click **Save** in the **Set Path** dialog box to complete the installation;
+- (8) **Enjoy**!
 ## GET STARTED
 
 ## Languages
