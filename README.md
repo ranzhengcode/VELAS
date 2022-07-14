@@ -1,4 +1,4 @@
-# VELAS
+
 <img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img>
 
 VELAS is an open-source toolbox for visualization and analysis of elastic anisotropy, written in GNU Octave 6.1.0.
