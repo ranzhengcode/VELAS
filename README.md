@@ -18,7 +18,7 @@
 
 ## INSTALL  
 - (1) Unzip the downloaded **VELAS** archive into any available path;  
-- (2) Start GNU Octave and click on the **Edit** option in the menu bar;  
+- (2) Start **GNU Octave** and click on the **Edit** option in the menu bar;  
 - (3) Click on **Set Path** in the **Edit** drop-down box;  
 - (4) Click **Add Folder** in the **Set Path** dialog box;  
 - (5) Click on **Folder with Subfolders** in the **Add Folder** drop-down list box;  
