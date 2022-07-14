@@ -1,14 +1,14 @@
 
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img></div>
 
-**VELAS** is a user-friendly open-source toolbox for the visualization and analysis of elastic anisotropy written in **GNU Octave** that can be used for any crystal symmetry. 
+**VELAS** is a user-friendly open-source toolbox for **the visualization and analysis of elastic anisotropy** written in **GNU Octave** that can be used for **any crystal symmetry**. 
 
 [VELAS Manual, PDF](https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS%20Manual.pdf)
 
 ## Highlights
-- Easy to install and use, no compilation required and no dependence on any third-party libraries.
+- **Easy** to install and use, **no** compilation required and **no** dependence on any third-party libraries.
 - A fully interactive graphical interactive interface (**GUI**).
-- Support for a wide range of visualisation schemes such as map projection and unit sphere projection.
+- Support for a wide range of visualisation schemes such as **map projection** and **unit sphere projection**.
 - Support for analysis of properties such as **hardness**, **fracture toughness**, **average Cauchy pressure**, **areal Poisson’s ratio**, etc.
 - Provides a **native interface** for calling data from the new (default) and legacy APIs of the [Materials Project's database](https://next-gen.materialsproject.org/).
 
