@@ -44,6 +44,9 @@ GNU/Linux, BSD, macOS, Windows.
 **Email**: ranzheng@outlook.com  
 Please **don't hesitate** to contact us if you have any questions about **using VELAS** or suggestions for **improving VELAS**.
 
+## Meaning of VELAS
+**VELAS** is derived from the combination of the letters **V**, **ELA** and **S** in "**V**isualization and analysis of **ELA**stic ani**S**otropy" and has no connection or relationship to any known trademarks, places or people that might be called "**VELAS**". 
+
 ## How to Cite
 Zheng Ran, Chunming Zou, et al., VELAS: An open-source toolbox for visualization and analysis of elastic anisotropy. submitted to Computer Physics Communication (2022).  
 **with** the access link: https://github.com/ranzhengcode/VELAS. 
