@@ -3,7 +3,7 @@
 
 ![GitHub issues](https://img.shields.io/github/issues/ranzhengcode/VELAS?logo=github)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ranzhengcode/VELAS?logo=github)
-![GitHub all releases](https://img.shields.io/github/downloads/ranzhengcode/VELAS/total?logo=Github)
+![GitHub all releases](https://img.shields.io/github/downloads/ranzhengcode/VELAS/total?logo=github)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ranzhengcode/VELAS?logo=Github)](https://github.com/ranzhengcode/VELAS/releases/tag/velas-1.0.0)
 [![GitHub](https://img.shields.io/github/license/ranzhengcode/VELAS?logo=GitHub)](https://github.com/ranzhengcode/VELAS/blob/main/LICENSE.md)  
 
