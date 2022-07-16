@@ -6,6 +6,7 @@
 ### Meaning of VELAS
 **VELAS** is derived from the combination of the letters **V**, **ELA** and **S** in "**V**isualization and analysis of **ELA**stic ani**S**otropy" and has no connection or relationship to any known trademarks, places or people that might be called "**VELAS**". 
 
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ranzhengcode/VELAS) 
 [VELAS Manual, PDF](https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS%20Manual.pdf)
 
 ## Highlights
