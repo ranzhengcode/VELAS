@@ -1,7 +1,7 @@
 
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img></div>
 
-[![GitHub license](https://img.shields.io/github/license/rangzhengcode/VELAS)](https://github.com/ranzhengcode/VELAS/blob/main/README.md)
+[![GitHub](https://img.shields.io/github/license/ranzhengcode/VELAS?logo=GitHub)](https://github.com/ranzhengcode/VELAS/blob/main/README.md)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ranzhengcode/VELAS)
 ![GitHub all releases](https://img.shields.io/github/downloads/ranzhengcode/VELAS/total)
 
