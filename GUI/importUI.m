@@ -7,6 +7,7 @@ if isequal(filen,0)
     errordlg('No file selected.','VELAS reminder');
 else
     %     [~,tname,~]     = fileparts(filen);
+    resetUI();  % reset UI
     filename        = strcat(pathn,filen);
     inputData       = getInput(filename);
     VELAS.inputData = inputData;
