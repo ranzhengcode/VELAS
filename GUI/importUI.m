@@ -242,12 +242,12 @@ else
 
         switch(inputData.KIC.model)
             % {'none','Niu''s model','Mazhnik''s model'}
-            case 'N'
+            case {'N','Niu'}
                 set(VELAS.proKICmdpop,'Value',2);
-            case 'M'
+            case {'M','Mazhnik'}
                 set(VELAS.proKICmdpop,'Value',3);
             otherwise
-                set(VELAS.proKICtppop,'Value',1);
+                set(VELAS.proKICmdpop,'Value',1);
         end
     end
 
