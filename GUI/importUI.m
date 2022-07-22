@@ -192,37 +192,37 @@ else
     
     if inputData.Pro(1,8) || inputData.Pro(2,8)
         % Fracture Toughness (KIC, MPa*m^(1/2))
-        if ~isempty(inputData.KIC.V0)
+        if ~isempty(inputData.KIC.V0) && ~isequal(inputData.KIC.V0,0)
             set(VELAS.proKICV0,'String',num2str(inputData.KIC.V0));
         else
             set(VELAS.proKICV0,'String','');
         end
 
-        if ~isempty(inputData.KIC.gEFr)
+        if ~isempty(inputData.KIC.gEFr) && ~isequal(inputData.KIC.gEFr,0)
             set(VELAS.proKICgEFr,'String',num2str(inputData.KIC.gEFr));
         else
             set(VELAS.proKICgEFr,'String','');
         end
 
-        if ~isempty(inputData.KIC.m)
+        if ~isempty(inputData.KIC.m) && ~isequal(inputData.KIC.m,0)
             set(VELAS.proKICm,'String',num2str(inputData.KIC.m));
         else
             set(VELAS.proKICm,'String','');
         end
 
-        if ~isempty(inputData.KIC.n)
+        if ~isempty(inputData.KIC.n) && ~isequal(inputData.KIC.n,0)
             set(VELAS.proKICn,'String',num2str(inputData.KIC.n));
         else
             set(VELAS.proKICn,'String','');
         end
 
-        if ~isempty(inputData.KIC.XA)
+        if ~isempty(inputData.KIC.XA) && ~isequal(inputData.KIC.XA,0)
             set(VELAS.proKICXA,'String',num2str(inputData.KIC.XA));
         else
             set(VELAS.proKICXA,'String','');
         end
 
-        if ~isempty(inputData.KIC.XB)
+        if ~isempty(inputData.KIC.XB) && ~isequal(inputData.KIC.XB,0)
             set(VELAS.proKICXB,'String',num2str(inputData.KIC.XB));
         else
             set(VELAS.proKICXB,'String','');
