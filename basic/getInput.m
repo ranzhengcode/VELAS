@@ -427,27 +427,208 @@ while true
                 KIC.material = KicM{3};
 
                 dataL = cellfun(@str2num,KicM(4:end));
-
-                len   = length(dataL);
-                switch(len)
-                    case 1
-                        KIC.V0     = dataL(1);
-                    case 2
-                        KIC.V0     = dataL(1);
-                        KIC.gEFr   = dataL(2);
-                    case 4
-                        KIC.V0     = dataL(1);
-                        KIC.gEFr   = dataL(2);
-                        KIC.m      = dataL(3);
-                        KIC.n      = dataL(4);
-                    case 6
-                        KIC.V0     = dataL(1);
-                        KIC.gEFr   = dataL(2);
-                        KIC.m      = dataL(3);
-                        KIC.n      = dataL(4);
-                        KIC.XA     = dataL(5);
-                        KIC.XB     = dataL(6);
-                end
+                
+                switch(KIC.model)
+                    case {'N','Niu'}
+                        switch(KIC.material)
+                            case 'IC'
+                              if isequal(dataL(1),0)
+                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.V0     = dataL(1);
+                              end
+                            case 'M'
+                              if isequal(dataL(1),0)
+                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.V0     = dataL(1);
+                              end
+                              if isequal(dataL(2),0)
+                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.gEFr   = dataL(2);
+                              end
+                            case 'IM'
+                               if isequal(dataL(1),0)
+                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.V0     = dataL(1);
+                              end
+                              if isequal(dataL(2),0)
+                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.gEFr   = dataL(2);
+                              end
+                              if isequal(dataL(3),0)
+                                  hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.m      = dataL(3);
+                              end
+                              if isequal(dataL(4),0)
+                                  hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.n      = dataL(4);
+                              end
+                              if isequal(dataL(5),0)
+                                  hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.XA     = dataL(5);
+                              end
+                              if isequal(dataL(6),0)
+                                  hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.XB     = dataL(6);
+                              end
+                        end
+                    case {'M','Mazhnik'}
+                       switch(KIC.material)
+                            case 'IC'
+                                if isequal(dataL(1),0)
+                                    hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                    KIC.model    = '';
+                                    KIC.material = '';
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
+                            case 'M'
+                                if isequal(dataL(1),0)
+                                    hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                    KIC.model    = '';
+                                    KIC.material = '';
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
+                            case 'IM'
+                              if isequal(dataL(1),0)
+                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.V0     = dataL(1);
+                              end
+                              if isequal(dataL(2),0)
+                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.gEFr   = dataL(2);
+                              end
+                              if isequal(dataL(3),0)
+                                  hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.m      = dataL(3);
+                              end
+                              if isequal(dataL(4),0)
+                                  hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.n      = dataL(4);
+                              end
+                              if isequal(dataL(5),0)
+                                  hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.XA     = dataL(5);
+                              end
+                              if isequal(dataL(6),0)
+                                  hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
+                                  pause(0.5);
+                                  if ishandle(hmsg)
+                                      close(hmsg);
+                                  end
+                                  KIC.model    = '';
+                                  KIC.material = '';
+                              else
+                                  KIC.XB     = dataL(6);
+                              end
+                       end
+                end 
 
             elseif (~isempty(strfind(lower(tline),'avg ')) || ~isempty(strfind(lower(tline),'average ')))
                 avg = regexp(tline,'\ ','split');
