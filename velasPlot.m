@@ -40,7 +40,8 @@ else
     mpctrl    = true; % true or false
     flag      = 'Mollweide'; % flag = {'Gall-Peters','Robinson','Hammer-Aitoff','Mollweide'};
     nmesh     = 7;
-    cmap      = 'jet';
+    cmapname  = 'jet';
+    cmap      = colormapdata(cmapname);
     lineStyle = '--';
     
     %% Basic setting
@@ -51,7 +52,15 @@ else
     % Font setting
     fontname     = 'Times New Roman';
     fontweight   = 'bold';
-    fontsize     = 20;
+    fontangle    = 'normal';
+	fontcolor    = 'k';
+	fontsize     = 20;
+	
+	font.fontname     = fontname;
+    font.fontweight   = fontweight;
+    font.fontangle    = fontangle;
+    font.fontcolor    = fontcolor;
+    font.fontsize     = fontsize;
     
     hmsg = msgbox('Plotting start!', 'VELAS reminder','help');
     pause(0.8);
@@ -342,9 +351,13 @@ else
             set(cbar,'FontName',fontname,'FontSize',fontsize,'FontWeight',fontweight);
             axpos   = get(gca,'Position');
             cpos    = get(cbar,'Position');
-            cpos(1) = axpos(1)+axpos(3)+0.05;
-            cpos(2) = axpos(2)+0.1;
-            cpos(3) = 0.618*cpos(3);
+            if isOctave
+                  cpos(1) = axpos(1)+axpos(3)+0.05;
+                  cpos(2) = axpos(2)+0.1;
+                  cpos(3) = 0.618*cpos(3);
+             else
+                  cpos(1) = axpos(1)+axpos(3)+0.065;
+            end
             set(cbar,'Position',cpos);
             proname = [inputData(ind(dk)).mma,char(32),inputData(ind(dk)).name];
             
@@ -405,9 +418,13 @@ else
                 set(cbar,'FontName',fontname,'FontSize',fontsize,'FontWeight',fontweight);
                 axpos   = get(gca,'Position');
                 cpos    = get(cbar,'Position');
-                cpos(1) = axpos(1)+axpos(3)+0.05;
-                cpos(2) = axpos(2)+0.1;
-                cpos(3) = 0.618*cpos(3);
+                if isOctave
+                  cpos(1) = axpos(1)+axpos(3)+0.05;
+                  cpos(2) = axpos(2)+0.1;
+                  cpos(3) = 0.618*cpos(3);
+                else
+                  cpos(1) = axpos(1)+axpos(3)+0.065;
+                end
                 set(cbar,'Position',cpos);
                 proname = [inputData(ind(dk)).mma,char(32),inputData(ind(dk)).name];
                 
@@ -429,9 +446,13 @@ else
                 set(cbar,'FontName',fontname,'FontSize',fontsize,'FontWeight',fontweight);
                 axpos = get(gca,'Position');
                 cpos = get(cbar,'Position');
-                cpos(1) = axpos(1)+axpos(3)+0.05;
-                cpos(2) = axpos(2)+0.1;
-                cpos(3) = 0.618*cpos(3);
+                if isOctave
+                  cpos(1) = axpos(1)+axpos(3)+0.05;
+                  cpos(2) = axpos(2)+0.1;
+                  cpos(3) = 0.618*cpos(3);
+                else
+                  cpos(1) = axpos(1)+axpos(3)+0.065;
+                end
                 set(cbar,'Position',cpos);
                 
                 % print pic
