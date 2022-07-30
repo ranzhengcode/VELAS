@@ -369,9 +369,13 @@ if VELAS.runflag || doplot
                 set(cbar,'FontName',fontname,'FontWeight',fontweight,'FontAngle',fontangle,'FontSize',fontsize);
                 axpos   = get(gca,'Position');
                 cpos    = get(cbar,'Position');
-                cpos(1) = axpos(1)+axpos(3)+0.05;
-                cpos(2) = axpos(2)+0.1;
-                cpos(3) = 0.618*cpos(3);
+                if isOctave
+                  cpos(1) = axpos(1)+axpos(3)+0.05;
+                  cpos(2) = axpos(2)+0.1;
+                  cpos(3) = 0.618*cpos(3);
+                else
+                  cpos(1) = axpos(1)+axpos(3)+0.065;
+                end
                 set(cbar,'Position',cpos);
                 proname = [inputData(ind(dk)).mma,char(32),inputData(ind(dk)).name];
                 
@@ -434,9 +438,13 @@ if VELAS.runflag || doplot
                     set(cbar,'FontName',fontname,'FontWeight',fontweight,'FontAngle',fontangle,'FontSize',fontsize);
                     axpos   = get(gca,'Position');
                     cpos    = get(cbar,'Position');
-                    cpos(1) = axpos(1)+axpos(3)+0.05;
-                    cpos(2) = axpos(2)+0.1;
-                    cpos(3) = 0.618*cpos(3);
+                    if isOctave
+                        cpos(1) = axpos(1)+axpos(3)+0.05;
+                        cpos(2) = axpos(2)+0.1;
+                        cpos(3) = 0.618*cpos(3);
+                    else
+                        cpos(1) = axpos(1)+axpos(3)+0.065;
+                    end
                     set(cbar,'Position',cpos);
                     proname = [inputData(ind(dk)).mma,char(32),inputData(ind(dk)).name];
                     
@@ -458,9 +466,13 @@ if VELAS.runflag || doplot
                     set(cbar,'FontName',fontname,'FontWeight',fontweight,'FontAngle',fontangle,'FontSize',fontsize);
                     axpos = get(gca,'Position');
                     cpos = get(cbar,'Position');
-                    cpos(1) = axpos(1)+axpos(3)+0.05;
-                    cpos(2) = axpos(2)+0.1;
-                    cpos(3) = 0.618*cpos(3);
+                    if isOctave
+                        cpos(1) = axpos(1)+axpos(3)+0.05;
+                        cpos(2) = axpos(2)+0.1;
+                        cpos(3) = 0.618*cpos(3);
+                    else
+                        cpos(1) = axpos(1)+axpos(3)+0.065;
+                    end
                     set(cbar,'Position',cpos);
                     
                     % print pic
