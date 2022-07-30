@@ -1,7 +1,7 @@
 function [cOut,colorm] = interpColormap(cmap,N)
   
  if ischar(cmap)
-    cmap = colormap(cmap);
+    cmap = colormapdata(cmap);
  end
 
 lenc        = length(cmap);
