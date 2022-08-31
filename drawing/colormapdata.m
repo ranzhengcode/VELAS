@@ -1,7 +1,7 @@
 function cmap = colormapdata(flag)
 
 %{
-        input: flag, must be char! Can be: 'jet' (default),'rainbow','hot','ocean','hsv','cool','spring','summer','autumn','winter','gray','bone','copper','pink','viridis','cubehelix','turbo','colorcube','flag','lines','prism'.
+        input: flag, must be char! Can be: 'cubehelix' (default),'jet','rainbow','hot','ocean','hsv','cool','spring','summer','autumn','winter','gray','bone','copper','pink','viridis','turbo','colorcube','flag','lines','prism'.
         (Note: If you enter an option other than the one above, it will return to the default "jet".)
         The colormap data export from GUN Octave.
 
