@@ -5,7 +5,7 @@ lineStyle    = '-';
 faceAlpha    = 1;
 faceLighting = 'flat';
 pureColor    = [];
-cmap         = 'jet';
+cmap         = 'viridis';
 switch(nargin)
     case 4
         faceColor = varargin{1};
