@@ -1,4 +1,4 @@
-function [cOut,colorm] = setColor(flag,N)
+function [cOut,colorm] = setColorN(flag,N)
 
 % Color: https://coolors.co/gradient-maker
 switch(flag)
