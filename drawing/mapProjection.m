@@ -5,7 +5,7 @@ function [handle,X,Y,data] = mapProjection(data,theta,phi,proname,varargin)
 
 flag              = 'Mollweide'; % name={'Gall-Peters','Robinson','Hammer-Aitoff','Mollweide'};
 nmesh             = 7;
-cmap              = 'jet';
+cmap              = 'viridis';
 lineStyle         = '--';
 font.fontname     = 'Times New Roman';
 font.fontweight   = 'Bold';
