@@ -40,7 +40,7 @@ else
     mpctrl    = true; % true or false
     flag      = 'Mollweide'; % flag = {'Gall-Peters','Robinson','Hammer-Aitoff','Mollweide'};
     nmesh     = 7;
-    cmapname  = 'jet';
+    cmapname  = 'viridis';
     cmap      = colormapdata(cmapname);
     lineStyle = '--';
     
