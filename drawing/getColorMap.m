@@ -32,7 +32,7 @@ switch(flag)
         g = linspace(0.9850, 0.85, N);
         b = linspace(0.9150, 0.15, N);
     otherwise
-        errordlg('No such colormap scheme.','Elatu reminder');
+        errordlg('No such colormap scheme.','VELAS reminder');
 end
 
 map = ([r', g', b']);

@@ -7,6 +7,7 @@ faceAlpha    = 1;
 faceLighting = 'flat';
 pureColor    = [];
 cmap         = 'viridis';
+flipflag     = false;
 switch(nargin)
     case 4
         faceColor = varargin{1};
@@ -43,6 +44,15 @@ switch(nargin)
         faceLighting = varargin{5};
         pureColor    = varargin{6};
         cmap         = varargin{7};
+    case 11
+        faceColor    = varargin{1};
+        edgeColor    = varargin{2};
+        lineStyle    = varargin{3};
+        faceAlpha    = varargin{4};
+        faceLighting = varargin{5};
+        pureColor    = varargin{6};
+        cmap         = varargin{7};
+        flipflag     = varargin{8};
 end
 X = sin(theta).*cos(phi);
 Y = sin(theta).*sin(phi);
@@ -55,6 +65,11 @@ if isnumeric(r)
 
     if isempty(pureColor)
         handle = surf(X,Y,Z,r,'FaceColor',faceColor, 'EdgeColor',edgeColor,'LineStyle',lineStyle,'FaceAlpha',faceAlpha,'FaceLighting',faceLighting,'EdgeAlpha',0);
+        lenD   = length(unique(r(:)));
+        if lenD >  8192
+            lenD = 8192;
+        end
+        cmap   = interpColormap(cmap,lenD,flipflag);
         colormap(cmap);
         box on;
         view(30,30);
@@ -102,11 +117,22 @@ elseif ischar(r)
     R   = fun(theta,phi);
     if isempty(pureColor)
         handle = surf(X,Y,Z,R,'FaceColor',faceColor, 'EdgeColor',edgeColor,'LineStyle',lineStyle,'FaceAlpha',faceAlpha,'FaceLighting',faceLighting);
+        lenD   = length(unique(R(:)));
+        if lenD >  8192
+            lenD = 8192;
+        end
+        cmap   = interpColormap(cmap,lenD,flipflag);
         colormap(cmap);
         cbar=colorbar; title(cbar, 'GPa','FontName','Times New Roman','FontSize',20,'FontWeight','bold');
     else
         cdata=cat(3,pureColor(1)*ones(size(X)),pureColor(2)*ones(size(X)),pureColor(3)*ones(size(X)));
         handle = surf(X,Y,Z,cdata,'FaceColor',faceColor, 'EdgeColor',edgeColor,'LineStyle',lineStyle,'FaceAlpha',faceAlpha,'FaceLighting',faceLighting);
+        lenD   = length(unique(cdata(:)));
+        if lenD >  8192
+            lenD = 8192;
+        end
+        cmap   = interpColormap(cmap,lenD,flipflag);
+        colormap(cmap);
     end
     camlight;
     lighting gouraud;

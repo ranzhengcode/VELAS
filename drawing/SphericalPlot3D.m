@@ -6,6 +6,7 @@ faceAlpha    = 1;
 faceLighting = 'flat';
 pureColor    = [];
 cmap         = 'viridis';
+flipflag     = false;
 switch(nargin)
     case 4
         faceColor = varargin{1};
@@ -42,6 +43,15 @@ switch(nargin)
         faceLighting = varargin{5};
         pureColor    = varargin{6};
         cmap         = varargin{7};
+    case 11
+        faceColor    = varargin{1};
+        edgeColor    = varargin{2};
+        lineStyle    = varargin{3};
+        faceAlpha    = varargin{4};
+        faceLighting = varargin{5};
+        pureColor    = varargin{6};
+        cmap         = varargin{7};
+        flipflag     = varargin{8};
 end
 L1=sin(theta).*cos(phi);
 L2=sin(theta).*sin(phi);
@@ -58,7 +68,7 @@ if isnumeric(r)
         if lenD >  8192
             lenD = 8192;
         end
-        cmap   = interpColormap(cmap,lenD);
+        cmap   = interpColormap(cmap,lenD,flipflag);
         colormap(cmap);
         shading interp;
         box on;
@@ -117,12 +127,12 @@ elseif ischar(r)
     R   = fun(theta,phi);
     X   = R.*L1; Y = R.*L2; Z = R.*L3;
     if isempty(pureColor)
-        handle = surf(X,Y,Z,r,'FaceColor',faceColor, 'EdgeColor',edgeColor,'LineStyle',lineStyle,'FaceAlpha',faceAlpha,'FaceLighting',faceLighting);
+        handle = surf(X,Y,Z,R,'FaceColor',faceColor, 'EdgeColor',edgeColor,'LineStyle',lineStyle,'FaceAlpha',faceAlpha,'FaceLighting',faceLighting);
         lenD   = length(unique(r(:)));
         if lenD >  8192
             lenD = 8192;
         end
-        cmap   = interpColormap(cmap,lenD);
+        cmap   = interpColormap(cmap,lenD,flipflag);
         colormap(cmap);
         shading interp;
         cbar=colorbar; title(cbar, 'GPa','FontName','Times New Roman','FontSize',20,'FontWeight','bold');
@@ -133,7 +143,7 @@ elseif ischar(r)
         if lenD >  8192
             lenD = 8192;
         end
-        cmap   = interpColormap(cmap,lenD);
+        cmap   = interpColormap(cmap,lenD,flipflag);
         colormap(cmap);
         shading interp;
     end

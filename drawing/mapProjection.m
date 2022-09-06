@@ -6,11 +6,13 @@ function [handle,X,Y,data] = mapProjection(data,theta,phi,proname,varargin)
 flag              = 'Mollweide'; % name={'Gall-Peters','Robinson','Hammer-Aitoff','Mollweide'};
 nmesh             = 7;
 cmap              = 'viridis';
+flipflag          = false;
 lineStyle         = '--';
 font.fontname     = 'Times New Roman';
 font.fontweight   = 'Bold';
 font.fontcolor    = 'k';
 font.fontsize     = 13;
+font.mpfontcolor  = 'k';
 switch(nargin)
     case 5
         flag      = varargin{1};
@@ -25,13 +27,20 @@ switch(nargin)
         flag      = varargin{1};
         nmesh     = varargin{2};
         cmap      = varargin{3};
-        lineStyle = varargin{4}; 
+        flipflag  = varargin{4}; 
     case 9
         flag      = varargin{1};
         nmesh     = varargin{2};
         cmap      = varargin{3};
-        lineStyle = varargin{4}; 
-        font      = varargin{5};
+        flipflag  = varargin{4}; 
+        lineStyle = varargin{5}; 
+    case 10
+        flag      = varargin{1};
+        nmesh     = varargin{2};
+        cmap      = varargin{3};
+        flipflag  = varargin{4}; 
+        lineStyle = varargin{5}; 
+        font      = varargin{6};
 end
 
 lat  = fliplr((pi/2-theta)');
@@ -49,7 +58,7 @@ lenD   = length(unique(data(:)));
 if lenD >  8192
   lenD = 8192;
 end
-cmap   = interpColormap(cmap,lenD);
+cmap   = interpColormap(cmap,lenD,flipflag);
 colormap(cmap);
 shading interp;
 
@@ -76,7 +85,7 @@ switch(flag)
         xAxis = X(end,locX);
         yAxis = Y(end,locX);
         for k = 1:nmesh
-            text(xAxis(k)-0.05,yAxis(k)-0.1,num2str(Xlabel(k)),'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+            text(xAxis(k)-0.05,yAxis(k)-0.1,num2str(Xlabel(k)),'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
         end
     case {'Hammer-Aitoff','HA','ha','Mollweide','M','m'}
         %
@@ -142,15 +151,15 @@ switch(flag)
             len = length(str);
             switch(len)
                 case 1
-                    text(xAxis(k)-0.03,yAxis(k)+0.01,str,'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+                    text(xAxis(k)-0.03,yAxis(k)+0.01,str,'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
                 case 2
-                    text(xAxis(k)-0.06,yAxis(k)+0.01,str,'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+                    text(xAxis(k)-0.06,yAxis(k)+0.01,str,'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
                 case 3
-                    text(xAxis(k)-0.1,yAxis(k)+0.01,str,'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+                    text(xAxis(k)-0.1,yAxis(k)+0.01,str,'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
                 case 4
-                    text(xAxis(k)-0.115,yAxis(k)+0.01,str,'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+                    text(xAxis(k)-0.115,yAxis(k)+0.01,str,'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
                 case 5
-                    text(xAxis(k)-0.14,yAxis(k)+0.01,str,'Color',font.fontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
+                    text(xAxis(k)-0.14,yAxis(k)+0.01,str,'Color',font.mpfontcolor,'FontWeight',font.fontweight,'FontSize',font.fontsize,'FontName',font.fontname);
             end
         end
 end
