@@ -54,5 +54,5 @@ GNU/Linux, BSD, macOS, Windows.
 Please **don't hesitate** to contact us if you have any questions about **using VELAS** or suggestions for **improving VELAS**.
 
 ## How to Cite
-Zheng Ran, Chunming Zou, et al., VELAS: An open-source toolbox for visualization and analysis of elastic anisotropy. submitted to Computer Physics Communication (2022).  
+Zheng Ran, Chunming Zou, et al., VELAS: An open-source toolbox for visualization and analysis of elastic anisotropy. Computer Physics Communication (2022) (**Accept**).  
 **with** the access link: https://github.com/ranzhengcode/VELAS. 
