@@ -260,39 +260,12 @@ else
     end
     
     % color map
-    switch(inputData.cmap)
-        case 'jet'
-            set(VELAS.cmappop,'Value',1);
-        case 'rainbow'
-            set(VELAS.cmappop,'Value',2);
-        case 'hot'
-            set(VELAS.cmappop,'Value',3);
-        case 'ocean'
-            set(VELAS.cmappop,'Value',4);
-        case 'hsv'
-            set(VELAS.cmappop,'Value',5);
-        case 'cool'
-            set(VELAS.cmappop,'Value',6);
-        case 'spring'
-            set(VELAS.cmappop,'Value',7);
-        case 'summer'
-            set(VELAS.cmappop,'Value',8);
-        case 'autumn'
-            set(VELAS.cmappop,'Value',9);
-        case 'winter'
-            set(VELAS.cmappop,'Value',10);
-        case 'gray'
-            set(VELAS.cmappop,'Value',11);
-        case 'bone'
-            set(VELAS.cmappop,'Value',12);
-        case 'copper'
-            set(VELAS.cmappop,'Value',13);
-        case 'pink'
-            set(VELAS.cmappop,'Value',14);
-        case 'viridis'
-            set(VELAS.cmappop,'Value',15);
-        case 'cubehelix'
-            set(VELAS.cmappop,'Value',16);
+    cmapall = get(VELAS.cmappop,'String');
+    cloc    = find(strcmp(inputData.cmap,cmapall)==1);
+    if ~isempty(cloc)
+      set(VELAS.cmappop,'Value',cloc);
+    else
+      set(VELAS.cmappop,'Value',1);
     end
     setColormapFig;
     
