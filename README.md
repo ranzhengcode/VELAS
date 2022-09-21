@@ -46,6 +46,21 @@ VELAS supports both **script** and **GUI** to run.
 ## Languages
 **GUN Octave** (Ver. 5.2.0 - latest, Recommended), in full support of **MATLAB**.
 
+## ColorMap
+Support 75 kinds of colormap:
+'viridis' (default), 'inferno', 'plasma', 'magma', 'rocket', 'mako', 'flare', 'crest', 'vlag', 'icefire','seismic'
+'cool', 'summer', 'copper', 'hot', 'ocean', 'gray', 'bone', 'Spectral', 'coolwarm', 'pink', 'spring', 'autumn',
+'winter', 'thermal', 'haline', 'solar', 'ice', 'deep', 'dense', 'algae', 'matter', 'turbid', 'speed', 'amp', 
+'tempo', 'rain', 'phase', 'balance', 'delta', 'curl', 'diff', 'tarn', 'cubehelix', 'turbo','Blues', 'BuGn', 
+'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges', 'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu', 'Reds', 
+'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd', 'afmhot', 'gistheat', 'BrBG', 'bwr', 'coolwarmC', 'PiYG', 'PRGn', 
+'PuOr', 'RdBu', 'RdGy', 'RdYlBu', 'RdYlGn'  
+Note: If the colormap above is not in the drop-down list box, check the custom colormap checkbox and enter the name of one of the above colormaps.  
+
+Setting your own colormap:  
+You can define your own colormap and store it in the valesColormap.mat file, and then import your colormap via custom colormap.  
+Note: the name of the colormap you define cannot be the same as the existing colormap in valesColormap.mat, otherwise it will overwrite the existing colormap.  
+
 ## Supported systems
 GNU/Linux, BSD, macOS, Windows.
 
