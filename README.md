@@ -26,6 +26,9 @@
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_GUI.png" width="481" height="785"></img></div>
 
 ## INSTALL  
+### Installation Scheme A
+- Run **install_VELAS** or **velasGUI**, VELAS will be automatically installed.
+### Installation Scheme B
 - (1) Unzip the downloaded **VELAS** archive into any available path;  
 - (2) Start **GNU Octave** and click on the **Edit** option in the menu bar;  
 - (3) Click on **Set Path** in the **Edit** drop-down box;  
