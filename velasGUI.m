@@ -650,10 +650,19 @@ VELAS.cmappop = uicontrol(VELAS.pltpl,'style','popupmenu',...
                'HorizontalAlignment','left',...
                'Value',1);
 VELAS.axcmap  = axes(VELAS.pltpl,'position',[0.32 0.64 0.22 0.3]);
-axis normal;
-[~,colorm]    = interpColormap('viridis',256);
-VELAS.aximg   = imshow(colorm);
-set(VELAS.cmappop,'Callback','setColormapFig;');
+try % If VELAS is not installed, it will be installed automatically using install_VELAS function.
+    axis normal;
+    [~,colorm]    = interpColormap('viridis',256);
+    VELAS.aximg   = imshow(colorm);
+    set(VELAS.cmappop,'Callback','setColormapFig;');
+catch
+    install_VELAS;
+    pause(1);
+    axis normal;
+    [~,colorm]    = interpColormap('viridis',256);
+    VELAS.aximg   = imshow(colorm);
+    set(VELAS.cmappop,'Callback','setColormapFig;');
+end
 VELAS.flipcmap = uicontrol(VELAS.pltpl,'style','checkbox',...
                'Units','normalized',...
                'position',[0.32 0.85 0.22 0.125],...
