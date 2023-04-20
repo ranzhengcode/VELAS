@@ -26,17 +26,10 @@ maintainers:
 - name: "Ran Zheng"
   contact: "ranzheng@outlook.com"
 versions:
-- id: "1.0.4"
-  date: "2022-10-18"
-  sha256: "8774319dd6100ca2a242cd0656286e90c3a745b288c3ff4ab040c2d0b33c5f21"
-  url: "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.4.tar.gz"
-  depends:
-  - "octave (>= 5.2.0)"
-  - "pkg"
-- id: "1.0.3"
-  date: "2022-08-31"
-  sha256: "8b9f4258d1135a4f147ea5e2bd6639b745a43cf76a522913140e874c5f500cf4"
-  url: "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.3.tar.gz"
+- id: "1.0.5"
+  date: "2023-04-20"
+  sha256: "ed9bf34e9c756d2f7df971bb5d87b0dfb6982f462d8aa865752fcbd20fe4109a"
+  url: "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.5.tar.gz"
   depends:
   - "octave (>= 5.2.0)"
   - "pkg"
