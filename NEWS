@@ -1,0 +1,36 @@
+VELAS v1.0.4 [18/10/2022]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
+ **add install_VELAS and uninstall_VELAS function to facilitate installation and use.
+ **Fixe bugs in velasGUI.m.
+ 
+ [21/09/2022]
+ **Remove the colormap: 'jet','rainbow','hsv','colorcube','flag','lines','prism', and
+   added new colormap, supporting 75 kinds of colormap. Also supports custom colormap.
+ **Remove some functions related to colormap.
+ **Add flipping colormap.
+ **Optimize plot functions.
+ **Optimize the GUI interface.
+ **Fixes bugs in importUI.m.
+
+VELAS v1.0.3 [31/08/2022]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
+ **Change the default colormap from 'jet' to 'viridis'.
+ **Fixes bugs
+
+VELAS v1.0.2 [30/07/2022]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
+ **Fixes bugs in velasPlot.m.
+ **Fixes bugs in plotUI.m.
+ **Add new function colormapdata into drawing Model.
+ **Add new colormap ('turbo', 'colorcube', 'flag', 'lines', 'prism') into velasGUI.m.
+
+VELAS v1.0.1 [22/07/2021]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
+ **Fixes bugs in velasGUI.m.
+ **Change the input setting of Fracture Toughness in getInput.m.
+ **Fixes bugs in importUI.m.
+ **Add new file resetUI.m into GUI Model.
+
+VELAS v1.0.1 [13/07/2021]:
+-----------------------------------------------------------------------------------------
+ **First Edition of VELAS
