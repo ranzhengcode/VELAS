@@ -1,0 +1,10 @@
+Name: VELAS
+Version: 1.0.5
+Date: 2023-04-20
+Author: Ran Zheng
+Maintainer: Ran Zheng
+Title: Visualization and analysis of ELAstic aniSotropy
+Description: Package for the visualization and analysis of elastic anisotropy
+Depends: octave (>= 5.2.0)
+Autoload: no
+License: GPLv3+
