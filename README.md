@@ -27,8 +27,16 @@
 
 ## INSTALL  
 ### Installation Scheme A
-- Run **install_VELAS** or **velasGUI**, VELAS will be automatically installed.
+- (1) install VELAS using **pkg** command in GNU Octave **command windows** as following:
+```
+pkg install "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.5.tar.gz"
+```
+- (2) And then using **pkg load velas** to load VELAS.
+- (3) Type **velasGUI** to run VELAS.
+- (4) **Enjoy**!
 ### Installation Scheme B
+- Run **install_VELAS** or **velasGUI**, VELAS will be automatically installed.
+### Installation Scheme C
 - (1) Unzip the downloaded **VELAS** archive into any available path;  
 - (2) Start **GNU Octave** and click on the **Edit** option in the menu bar;  
 - (3) Click on **Set Path** in the **Edit** drop-down box;  
