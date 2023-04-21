@@ -1,5 +1,9 @@
-VELAS v1.0.5 [20/04/2023]: 
+VELAS v1.0.5 [21/04/2023]: Bug Fixes and improvements
+**Fix bugs in install_VELAS.m and uninstall_VELAS.m
 **Rename LICENSE.md to COPYING in order to submit to gnu-octave/packages.
+**Add DESCRIPTION file
+**Add INDEX file
+**Add .hgignore file
 
 VELAS v1.0.4 [18/10/2022]: Bug Fixes and improvements
 -----------------------------------------------------------------------------------------
