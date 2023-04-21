@@ -1,4 +1,0 @@
-function mpapiUI()
-
-global VELAS
-
