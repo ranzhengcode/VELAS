@@ -1,0 +1,2 @@
+*.m linguist-language=Octave
+*.m linguist-detectable=true 
