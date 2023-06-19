@@ -2,7 +2,6 @@
 
 <p align="center"><img src="https://profile-counter.glitch.me/VELAS/count.svg" alt="BurpSuiteCN-Release :: Visitor's Count" />
  <img width=0 height=0 src="https://profile-counter.glitch.me/ranzhengcode/count.svg" alt="ranzhengcode:: Visitor's Count" />
-
 </p>
 
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img></div>
