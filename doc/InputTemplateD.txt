@@ -1,6 +1,6 @@
 
 # Offline mode or Online mode to call Materials Project, the value is "no" (default)/"yes"
-# Note: In offline mode, it's no need to provide x-api-key, both MPID and Pretty Formula are supported; 
+# Note: In offline mode, it's no need to provide x-api-key, both MPID and Pretty Formula are supported;
 # In online mode, x-api-key must be provided, and only MPID query is supported
 mponline no
 
@@ -17,6 +17,15 @@ mpapiver new
 # External isostatic pressure of crystal (GPa), default:0 GPa
 pressure 0.00
 
+# density of crystal cell (g/cm^3), default: 1.0 (g/cm^3)
+density 1.0
+
+# volume of crystal cell (A^3), default: 1.0 (Å^3)
+volume 1.0
+
+# total number of atoms in crystal cell
+atomnum 1
+
 # 3D mesh number of theta(θ), phi(φ), chi (χ)
 nmesh3d 200.00 400.00 360.00
 
@@ -31,13 +40,13 @@ teps 1.0e-06
 #    3D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
 #    2D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
 properties
-1 1 1 1 1 1 1 1	
-1 1 1 1 1 1 1 1		
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
 
 # The model of Vickers hardness, Hv M for Mazhnik's model, Hv C for Chen's model, Hv C for Tian's model
 Hv M
 
-# The model and input parameters  of fracture toughness, Kic Model materials: Model -> M (Mazhnik's model)/ N (Niu's model), materials -> IC(ionic or covalent) / PM (pure metals) / IM (intermetallics)
+# The model and input parameters  of fracture toughness, Kic Model materials: Model -> M (Mazhnik's model)/ N (Niu's model); materials -> IC(ionic or covalent) / M (metals) / IM (intermetallics)
 # Input parameters of fracture toughness, the order: V0 gEFr m n XA XB
 KIC M IC 0.00 0.00 0.00 0.00 0.00 0.00
 
@@ -64,6 +73,6 @@ dpi 600
 
 # Plane to be calculated [XYZ coordinates]
 planeXY
- 1.00	 0.00	 0.00	
- 0.00	 1.00	 0.00	
- 0.00	 0.00	 1.00	
+ 1.00	 0.00	 0.00
+ 0.00	 1.00	 0.00
+ 0.00	 0.00	 1.00
