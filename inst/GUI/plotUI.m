@@ -7,6 +7,9 @@ switch(nargin)
         global VELAS
         runflag = VELAS.runflag;
         doplot  = get(VELAS.pltdirct,'Value');
+        mpmodelstr = get(VELAS.p2dMMod,'String');
+        loc        = get(VELAS.p2dMMod,'Value');
+        vsplot.mpmodel = mpmodelstr{loc};
     case 1
         vsplot  = varargin{1};
         doplot  = vsplot.doplot;
@@ -25,13 +28,13 @@ if runflag || doplot
             for k = 1:lenF
                 inname             = filename{1,k};
                 inputData(k).fname = inname;
-                [inputData(k).mode,inputData(k).name,inputData(k).units,inputData(k).abbr,inputData(k).plane,inputData(k).mma] = getPropName(inname);
+                [inputData(k).mode,inputData(k).name,inputData(k).units,inputData(k).abbr,inputData(k).flname,inputData(k).plane,inputData(k).mma] = getPropName(inname);
                 tfname             = strcat(pathn,filename{1,k});
                 inputData(k).data  = importdata(tfname);
             end
         else
             inputData.fname = filename;
-            [inputData.mode,inputData.name,inputData.units,inputData.abbr,inputData.plane,inputData.mma] = getPropName(filename);
+            [inputData.mode,inputData.name,inputData.units,inputData.abbr,inputData.flname,inputData.plane,inputData.mma] = getPropName(filename);
             tfname          = strcat(pathn,filename);
             inputData.data  = importdata(tfname);
         end
@@ -228,8 +231,8 @@ if runflag || doplot
                             'FontName',fontname);
                     end
 
-                    set(gca,'xminortick','on')
-                    set(gca,'yminortick','on')
+                    set(gca,'xminortick','on');
+                    set(gca,'yminortick','on');
                     set(gca, 'XLim', 1.15*max(tR)*[-1, 1]);
                     set(gca, 'YLim', 1.15*max(tR)*[-1, 1]);
                     hold off;
@@ -371,7 +374,8 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strrep(inputData(dk).fname,'dat','tif'));
+                [~,tpname,~] = fileparts(inputData(ind(dk)).fname);
+                picname = strcat(picpath,filesep,tpname,'_',inputData(ind(dk)).flname,'.tif');
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -449,7 +453,8 @@ if runflag || doplot
 
                 % print pic
                 if doprint
-                    picname = strcat(picpath,filesep,strrep(inputData(ind(dk)).fname,'dat','tif'));
+                    [~,tpname,~] = fileparts(inputData(ind(dk)).fname);
+                    picname = strcat(picpath,filesep,tpname,'_',inputData(ind(dk)).flname,'.tif');
                     ddpi    = strcat('-r',dpi);
                     print(gcf,picname,ddpi, "-dtiffn");
                     pause(1e-6);
@@ -518,7 +523,8 @@ if runflag || doplot
 
                     % print pic
                     if doprint
-                        picname = strcat(picpath,filesep,strrep(inputData(ind(dk)).fname,'.dat','_SUnit.tif'));
+                        [~,tpname,~] = fileparts(inputData(ind(dk)).fname);
+                        picname = strcat(picpath,filesep,tpname,'_',inputData(ind(dk)).flname,'_SUnit.tif');
                         ddpi    = strcat('-r',dpi);
                         print(gcf,picname,ddpi, "-dtiffn");
                         pause(1e-6);
@@ -545,7 +551,8 @@ if runflag || doplot
 
                     % print pic
                     if doprint
-                        picname = strcat(picpath,filesep,strrep(inputData(ind(dk)).fname,'.dat','_map.tif'));
+                        [~,tpname,~] = fileparts(inputData(ind(dk)).fname);
+                        picname = strcat(picpath,filesep,tpname,'_',inputData(ind(dk)).flname,'_',vsplot.mpmodel,'_map.tif');
                         ddpi    = strcat('-r',dpi);
                         print(gcf,picname,ddpi, "-dtiffn");
                         pause(1e-6);
@@ -639,7 +646,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_E_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Young_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -724,7 +731,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_beta_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_LinCompress_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -809,7 +816,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_B_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Bulk_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -928,7 +935,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_G_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Shear_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -1108,7 +1115,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_P_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Poisson_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -1193,7 +1200,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_Pr_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Pugh_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -1270,7 +1277,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_Hv_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_Hardness_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);
@@ -1347,7 +1354,7 @@ if runflag || doplot
 
             % print pic
             if doprint
-                picname = strcat(picpath,filesep,strcat(combname,'_3D_KIC_comb.tif'));
+                picname = strcat(picpath,filesep,strcat(combname,'_3D_FractTough_comb.tif'));
                 ddpi    = strcat('-r',dpi);
                 print(gcf,picname,ddpi, "-dtiffn");
                 pause(1e-6);

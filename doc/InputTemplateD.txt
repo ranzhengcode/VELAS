@@ -20,7 +20,7 @@ pressure 0.00
 # density of crystal cell (g/cm^3), default: 1.0 (g/cm^3)
 density 1.0
 
-# volume of crystal cell (A^3), default: 1.0 (Å^3)
+# volume of crystal cell (A^3), default: 1.0 (A^3)
 volume 1.0
 
 # total number of atoms in crystal cell

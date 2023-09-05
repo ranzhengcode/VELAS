@@ -44,6 +44,46 @@ if ~isempty(C)
         end
         fprintf(fid,'%s\r','');
 
+        % Structure under Pressure (GPa)
+        fprintf(fid,'%s\r','# External isostatic pressure of crystal (GPa), default:0.00 GPa');
+        pressure = str2num(get(VELAS.basepressure,'String'));
+        if ~isempty(pressure)
+            fprintf(fid,'%s %5.2f\r','pressure', pressure);
+        else
+            fprintf(fid,'%s\r','pressure 0.00');
+        end
+        fprintf(fid,'%s\r','');
+
+        % Density of crystal cell (g/cm^3)
+        fprintf(fid,'%s\r','# density of crystal cell (g/cm^3), default: 1.0 (g/cm^3)');
+        density = str2num(get(VELAS.baseden,'String'));
+        if ~isempty(density)
+            fprintf(fid,'%s %5.2f\r','density', density);
+        else
+            fprintf(fid,'%s\r','density 1.0');
+        end
+        fprintf(fid,'%s\r','');
+
+        % Volume of crystal cell (A^3)
+        fprintf(fid,'%s\r','# volume of crystal cell (A^3), default: 1.0 (A^3)');
+        volume = str2num(get(VELAS.basevol,'String'));
+        if ~isempty(volume)
+            fprintf(fid,'%s %5.2f\r','volume', volume);
+        else
+            fprintf(fid,'%s\r','volume 1.0');
+        end
+        fprintf(fid,'%s\r','');
+
+        % total number of atoms in crystal cell
+        fprintf(fid,'%s\r','# total number of atoms in crystal cell');
+        atomnum = str2num(get(VELAS.baseatomn,'String'));
+        if ~isempty(atomnum)
+            fprintf(fid,'%s %5.2f\r','atomnum', atomnum);
+        else
+            fprintf(fid,'%s\r','atomnum 1');
+        end
+        fprintf(fid,'%s\r','');
+
         % 3D mesh number of [θ, φ, χ]
         fprintf(fid,'%s\r','# 3D mesh number of theta(θ), phi(φ), chi (χ)');
         nmesh3d = get(VELAS.basenmesh3d,'String');
@@ -145,7 +185,7 @@ if ~isempty(C)
 
         fprintf(fid,[repmat('%1.0f ', 1, size(Pro,2)), '\n'], logical(Pro)');
         fprintf(fid,'%s\r','');
-        
+
         %% Materials Project API
         fprintf(fid,'%s\r','# Offline mode or Online mode to call Materials Project, the value is "no" (default)/"yes"');
         fprintf(fid,'%s\r','# Note: In offline mode, it''s no need to provide x-api-key, both MPID and Pretty Formula are supported; ');
@@ -204,12 +244,12 @@ if ~isempty(C)
                 fprintf(fid,'%s\r', 'Hv T');
                 fprintf(fid,'%s\r','');
         end
-        
+
         % Output model of Fracture Toughness (KIC, MPa*m^(1/2))
         KICtype   = get(VELAS.proKICtppop,'Value');  % Materials type
         KICmode   = get(VELAS.proKICmdpop,'Value');  % Model
         if KICtype ~= 1 && KICmode ~= 1
-            fprintf(fid,'%s\r', '# The model and input parameters  of fracture toughness, Kic-Model-materials: Model -> M (Mazhnik''s model)/ N (Niu''s model), materials -> IC(ionic or covalent) / PM (pure metals) / IM (intermetallics)');
+            fprintf(fid,'%s\r', '# The model and input parameters  of fracture toughness, Kic-Model-materials: Model -> M (Mazhnik''s model)/ N (Niu''s model); materials -> IC(ionic or covalent) / M (metals) / IM (intermetallics)');
             fprintf(fid,'%s\r', '# Input parameters of fracture toughness, the order: V0 gEFr m n XA XB');
             kicStr  = 'KIC ';
 
@@ -224,11 +264,11 @@ if ~isempty(C)
             switch(KICtype)
                 % {'none','Ionic/Covalent','Pure metal','Intermetallic'}
                 case 2
-                    kicStr = [kicStr,'IC'];
+                    kicStr = [kicStr,'IC '];
                 case 3
-                    kicStr = [kicStr,'PM'];
+                    kicStr = [kicStr,'M '];
                 case 4
-                    kicStr = [kicStr,'IM'];
+                    kicStr = [kicStr,'IM '];
             end
             KIC = zeros(1,6);
             % Parameters

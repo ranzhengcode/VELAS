@@ -7,30 +7,30 @@ C = get(VELAS.CS,'String');
 if VELAS.importflag
     VELAS.runflag   = true;
     inputData       = getUiInput;
-    filename        = inputData.filename;
-    [pathn,filen,~] = fileparts(filename);
-    matnameInput    = strcat(filen,'Input.mat');
-    matnameOutput   = strcat(filen,'Output.mat');
-    inmatname       = strcat(pathn,filesep,matnameInput);
+    % filename        = inputData.filename;
+    % [pathn,filen,~] = fileparts(filename);
+    % matnameInput    = strcat(filen,'Input.mat');
+    % matnameOutput   = strcat(filen,'Output.mat');
+    % inmatname       = strcat(pathn,filesep,matnameInput);
     
-    save(inmatname,'inputData'); 
+    % save(inmatname,'inputData'); 
     initR          = initOutput();
-    outputData     = checkStability(inputData,initR);
+    checkStability(inputData,initR);
 %     outmatname     = strcat(pathn,filesep,matnameOutput);
 %     save(outmatname,'outputData'); 
 else
      if ~isempty(C)
          VELAS.runflag   = true;
          inputData       = getUiInput;
-         filename        = inputData.filename;
-         [pathn,filen,~] = fileparts(filename);
-         matnameInput    = strcat(filen,'Input.mat');
-         matnameOutput   = strcat(filen,'Output.mat');
-         inmatname       = strcat(pathn,filesep,matnameInput);
-         save(inmatname,'inputData');
+         % filename        = inputData.filename;
+         % [pathn,filen,~] = fileparts(filename);
+         % matnameInput    = strcat(filen,'Input.mat');
+         % matnameOutput   = strcat(filen,'Output.mat');
+         % inmatname       = strcat(pathn,filesep,matnameInput);
+         % save(inmatname,'inputData');
          
          initR           = initOutput();
-         outputData      = checkStability(inputData,initR);
+         checkStability(inputData,initR);
 %          outmatname      = strcat(pathn,filesep,matnameOutput);
 %          save(outmatname,'outputData');
      else

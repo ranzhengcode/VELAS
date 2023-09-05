@@ -28,8 +28,11 @@ nphi            = inputData.nphi;
 nchi            = inputData.nchi;
 ntheta2d        = inputData.ntheta2d;
 teps            = inputData.teps;
+KIC             = inputData.KIC;
 Pro             = inputData.Pro;
-
+density         = inputData.density;      % density of crystal cell
+atomnum         = inputData.atomnum;      % total number of atoms in crystal cell
+volume          = inputData.volume;       % volume of crystal cell
 [filepath,fname,~]   = fileparts(inputData.filename);
 
 % creat new folder named by fname
@@ -52,29 +55,33 @@ if isempty(cryType)
     cryType = getCrystalType(C);
 end
 
+% contants
+h  = 6.62607015e-34; % Planck constant
+kB = 1.380649e-23;   % Boltzmann constant
+% NA = 6.02214076e23;  % Avogadro constant
+
 tic;
 
 % VELAS logo info
 fprintf(fid,'%s\r','');
-fprintf(fid,'%s\r','              +---------------------------------------------------------+');
-fprintf(fid,'%s\r','              |                                                         |');
-fprintf(fid,'%s\r','              |     V       V  EEEEEEE  L            A      SSSSSSS     |');
-fprintf(fid,'%s\r','              |      V     V   E        L           A A     S           |');
-fprintf(fid,'%s\r','              |       V   V    EEEEEEE  L          AAAAA    SSSSSSS     |');
-fprintf(fid,'%s\r','              |        V V     E        L         A     A         S     |');
-fprintf(fid,'%s\r','              |         V      EEEEEEE  LLLLLLL  A       A  SSSSSSS     |');
-fprintf(fid,'%s\r','              |                                                         |');
-fprintf(fid,'%s\r','              |                  VELAS version 1.0.0                    |');
-fprintf(fid,'%s\r','              |                   Author: Zheng Ran                     |');
-fprintf(fid,'%s\r','              |               Email:ranzheng@outlook.com                |');
-fprintf(fid,'%s\r','              |                                                         |');
-fprintf(fid,'%s\r','              | If you use VELAS in your resarch, please cite:          |');
-fprintf(fid,'%s\r','              |                                                         |');
-fprintf(fid,'%s\r','              | "VELAS: An open-source toolbox for visualization and    |');
-fprintf(fid,'%s\r','              |           analysis of elastic anisotropy"               |');
-fprintf(fid,'%s\r','              +---------------------------------------------------------+');
+fprintf(fid,'%s\r',' +-----------------------------------------------------------------------------+');
+fprintf(fid,'%s\r',' |                                                                             |');
+fprintf(fid,'%s\r',' |               V       V  EEEEEEE  L            A      SSSSSSS               |');
+fprintf(fid,'%s\r',' |                V     V   E        L           A A     S                     |');
+fprintf(fid,'%s\r',' |                 V   V    EEEEEEE  L          AAAAA    SSSSSSS               |');
+fprintf(fid,'%s\r',' |                  V V     E        L         A     A         S               |');
+fprintf(fid,'%s\r',' |                   V      EEEEEEE  LLLLLLL  A       A  SSSSSSS               |');
+fprintf(fid,'%s\r',' |                                                                             |');
+fprintf(fid,'%s\r',' |                               VELAS version 1.0.6                           |');
+fprintf(fid,'%s\r',' |                               Author: Zheng Ran                             |');
+fprintf(fid,'%s\r',' |                               Email:ranzheng@outlook.com                    |');
+fprintf(fid,'%s\r',' |                                                                             |');
+fprintf(fid,'%s\r',' | If you use VELAS in your resarch, please cite:                              |');
+fprintf(fid,'%s\r',' |                                                                             |');
+fprintf(fid,'%s\r',' |    "Z. Ran, et al., Computer Physics Communications, 283 (2023) 108540,     |');
+fprintf(fid,'%s\r',' |     DOI:https://doi.org/10.1016/j.cpc.2022.108540"                          |');
+fprintf(fid,'%s\r',' +-----------------------------------------------------------------------------+');
 % VELAS logo info end
-
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r',strcat('Start at:',32,datestr(now())));
 
@@ -87,11 +94,17 @@ fprintf(fid,'%s\t%s\t\r','Output file :',logFilename);
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s%s\r','Crystal system : ',cryType);
 fprintf(fid,'%s\r','');
-fprintf(fid,'%s%5.2f\r','Structure under pressure  [Units in GPa]: ',pressure);
+fprintf(fid,'%s%5.4f\r','Structure under pressure  [Units in GPa]: ',pressure);
+fprintf(fid,'%s\r','');
+fprintf(fid,'%s%5.4f\r','Volume of crystal cell [Units in Å^3]: ',volume);
+fprintf(fid,'%s\r','');
+fprintf(fid,'%s%5.4f\r','Density of crystal cell  [Units in g/cm^3]: ',density);
+fprintf(fid,'%s\r','');
+fprintf(fid,'%s%5.4f\r','Total number of atoms in crystal cell : ',atomnum);
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r','Stifness matrix C [Units in GPa]');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,[repmat('%5.2f\t', 1, size(C,2)), '\n'], C');
+fprintf(fid,[repmat('%5.4f\t', 1, size(C,2)), '\n'], C');
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r','                            Meshing parameters');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
@@ -111,7 +124,7 @@ if inputData.planeSph
     if inputData.planeAng
         fprintf(fid,'%s\r','                         Plane for 2D calculation [In angle]');
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-        fprintf(fid,[repmat('%5.2f\t', 1, size(planeS,2)), '\n'], planeS');
+        fprintf(fid,[repmat('%5.4f\t', 1, size(planeS,2)), '\n'], planeS');
     else
         fprintf(fid,'%s\r','                         Plane for 2D calculation [In radian]');
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
@@ -137,7 +150,7 @@ fprintf(fid,'%s\r','------------------------------------------------------------
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r','Compliance matrix S [(if C in GPa, then S in (TPa)^-1]');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,[repmat('%5.2f\t', 1, size(S,2)), '\n'], 1000*S');
+fprintf(fid,[repmat('%5.4f\t', 1, size(S,2)), '\n'], 1000*S');
 fprintf(fid,'%s\r','');
 
 % calculating the Eigenvalues of the stiffness matrix C
@@ -145,7 +158,7 @@ lamda = eig(C);
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r','Eigenvalues of the stiffness matrix,lamda(λ) [Units in GPa]');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,[repmat('%5.2f\t', 1, size(lamda,1)), '\n'], lamda');
+fprintf(fid,[repmat('%5.4f\t', 1, size(lamda,1)), '\n'], lamda');
 fprintf(fid,'%s\r','');
 
 %% Tht average scheme of Voigt-Reuss-Hill (VRH)
@@ -205,6 +218,8 @@ Pwv             = calcPwaveModulus(Bv,Gv);
 Pwr             = calcPwaveModulus(Br,Gr);
 Pwh             = calcPwaveModulus(Bh,Gh);
 % Elastic Anisotropy
+AZ              = 2*C(4,4)/(C(1,1)-C(1,2));               % Zener anisotropy index
+AC              = (Gv-Gr)/(Gv+Gr);                        % Chung anisotropy index
 AU              = Bv/Br + 5*Gv/Gr - 6;                    % Ranganathan and Ostoja-Starzewski universal anisotropy index
 AL              = sqrt((log(Bv/Br)^2 + 5*log(Gv/Gr)^2));  % Kube's log-Euclidean anisotropy index
 
@@ -213,28 +228,67 @@ HvMazhnikv = calcHardness(Ev,nuv,'M'); HvMazhnikr = calcHardness(Er,nur,'M'); Hv
 HvChenv    = calcHardness(Gv,Bv,'C');  HvChenr    = calcHardness(Gr,Br,'C');  HvChenh    = calcHardness(Gh,Bh,'C');
 HvTianv    = calcHardness(Gv,Bv,'T');  HvTianr    = calcHardness(Gr,Br,'T');  HvTianh    = calcHardness(Gh,Bh,'T');
 
+% Machinability index
+nvMV = Bv/C(4,4); nvMR = Br/C(4,4); nvMH = Bh/C(4,4);
+
+% average sound velocity νa
+vlv = 1000*sqrt((3*Bv+4*Gv)/(3*density)); vlr = 1000*sqrt((3*Br+4*Gr)/(3*density)); vlh = 1000*sqrt((3*Bh+4*Gh)/(3*density));
+vtv = 1000*sqrt(Gv/density); vtr = 1000*sqrt(Gr/density); vth = 1000*sqrt(Gh/density);
+vmv = ((2/vtv^3+1/vlv^3)/3)^(-1/3); vmr = ((2/vtr^3+1/vlr^3)/3)^(-1/3); vmh = ((2/vth^3+1/vlh^3)/3)^(-1/3);
+
+% Fracture Toughness with Mazhnik's model
+kicv = calcFractureToughness(Ev,nuv,KIC);
+kicr = calcFractureToughness(Er,nur,KIC);
+kich = calcFractureToughness(Eh,nuh,KIC);
+
+% Debye temperature
+tDv  = 1e10*((h/kB)*(3*atomnum/(4*pi*volume))^(1/3))*vmv;
+tDr  = 1e10*((h/kB)*(3*atomnum/(4*pi*volume))^(1/3))*vmr;
+tDh  = 1e10*((h/kB)*(3*atomnum/(4*pi*volume))^(1/3))*vmh;
+
+% Heat Capacity J/(g K)
+Cap  = 3*atomnum*kB*1e24/(density*volume);
+
+% Melting temperature
+Tm    = 354+4.5*(2*C(1,1)+C(3,3))/3;
+
+% Thermal expansion
+alv  = 1.6e-3/Ev; alr  = 1.6e-3/Er; alh  = 1.6e-3/Eh;
+alt  = 0.02/Tm;
+
+% Minimum thermal conductivity
+% Clarke (I)
+kmCla1v = 0.87e20*kB*(atomnum/volume)^(2/3)*(Ev*1e9)^(1/2)*(density*1000)^(-1/2);
+kmCla1r = 0.87e20*kB*(atomnum/volume)^(2/3)*(Er*1e9)^(1/2)*(density*1000)^(-1/2);
+kmCla1h = 0.87e20*kB*(atomnum/volume)^(2/3)*(Eh*1e9)^(1/2)*(density*1000)^(-1/2);
+
+% Clarke (II)
+kmCla2v = 1e20*kB*vmv*(atomnum/volume)^(2/3);
+kmCla2r = 1e20*kB*vmr*(atomnum/volume)^(2/3);
+kmCla2h = 1e20*kB*vmh*(atomnum/volume)^(2/3);
+
+% Cahill
+kmCahv = 1e20*(kB/2.48)*(atomnum/volume)^(2/3)*(vlv+2*vtv);
+kmCahr = 1e20*(kB/2.48)*(atomnum/volume)^(2/3)*(vlr+2*vtr);
+kmCahh = 1e20*(kB/2.48)*(atomnum/volume)^(2/3)*(vlh+2*vth);
+
+
 fprintf(fid,'%s\r','');
 fprintf(fid,'%s\r','=============================================================================================');
 fprintf(fid,'%s\r','            The average scheme of Voigt-Reuss-Hill (Units in GPa)');
 fprintf(fid,'%s\r','=============================================================================================');
 fprintf(fid,'%s\t%s\t%s\t\r','                                 Voigt','       Reuss','       Hill');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Bulk modulus              :','    ',Bv,'      ',Br,'      ',Bh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Shear modulus             :','    ',Gv,'      ',Gr,'      ',Gh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Young modulus             :','    ',Ev,'      ',Er,'      ',Eh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Poisson ratio             :','    ',nuv,'      ',nur,'      ',nuh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'P-wave modulus            :','    ',Pwv,'      ',Pwr,'      ',Pwh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Lame''s first parameter    :','    ',lamestv,'      ',lamestr,'      ',lamesth);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Lame''s second parameter   :','    ',lamendv,'      ',lamendr,'      ',lamendh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Pugh ratio                :','    ',Prv,'      ',Prr,'      ',Prh);
-fprintf(fid,strcat('%s\t',repmat('%s%s\t',1,3), '\n'), 'Ductility                 :','    ',getDuctility(Prv),'      ',getDuctility(Prr),'      ',getDuctility(Prh));
-fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Average Cauchy pressure   :','    ',Cpv,'      ',Cpr,'      ',Cph);
-fprintf(fid,strcat('%s\t',repmat('%s\t',1,3), '\n'), 'Bond Tpye                 :',getBondType(Cpv),getBondType(Cpr),getBondType(Cph));
-fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Mazhnik):','    ',HvMazhnikv,'      ',HvMazhnikr,'      ',HvMazhnikh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Chen)   :','    ',HvChenv,'      ',HvChenr,'      ',HvChenh);
-fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Tian)   :','    ',HvTianv,'      ',HvTianr,'      ',HvTianh);
-fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Bulk modulus                :','    ',Bv,'      ',Br,'      ',Bh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Shear modulus               :','    ',Gv,'      ',Gr,'      ',Gh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Young modulus               :','    ',Ev,'      ',Er,'      ',Eh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Poisson ratio               :','    ',nuv,'      ',nur,'      ',nuh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'P-wave modulus              :','    ',Pwv,'      ',Pwr,'      ',Pwh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Lame first parameter        :','    ',lamestv,'      ',lamestr,'      ',lamesth);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Lame second parameter       :','    ',lamendv,'      ',lamendr,'      ',lamendh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Pugh ratio                  :','    ',Prv,'      ',Prr,'      ',Prh);
+fprintf(fid,strcat('%s\t',repmat('%s%s\t',1,3), '\n'), 'Ductility                   :','    ',getDuctility(Prv),'      ',getDuctility(Prr),'      ',getDuctility(Prh));
+fprintf(fid,strcat('%s\t',repmat('%s%6.2f\t',1,3), '\n'), 'Average Cauchy pressure     :','    ',Cpv,'      ',Cpr,'      ',Cph);
 switch(cryType)
     % Cauchy's pressure based on Cij
     case 'Cubic'
@@ -250,11 +304,57 @@ switch(cryType)
         Cp3 = C(2,3) - C(4,4);
         fprintf(fid,'%s\t%s%6.2f\t%s%6.2f\t%s%6.2f\r', 'Cauchy pressure based on Cij: ',' [C12-C66]: ',Cp1,'[C13-C55]: ',Cp2,'[C23-C44]: ',Cp3);
 end
+fprintf(fid,strcat('%s\t',repmat('%s\t',1,3), '\n'), 'Bond Tpye                   :',getBondType(Cpv),getBondType(Cpr),getBondType(Cph));
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,strcat('%s%6.4f\t', '\n'), 'Kleinman parameter zeta(ζ)         :',Zeta);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Machinability index         :','    ',nvMV,'      ',nvMR,'      ',nvMH);
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
-fprintf(fid,strcat('%s%6.4f\t', '\n'), 'Universal anisotropy index (ROS''s) :',AU);
-fprintf(fid,strcat('%s%6.4f\t', '\n'), 'Universal anisotropy index (Kube''s):',AL);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Mazhnik)  :','    ',HvMazhnikv,'      ',HvMazhnikr,'      ',HvMazhnikh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Chen)     :','    ',HvChenv,'      ',HvChenr,'      ',HvChenh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Vickers hardness (Tian)     :','    ',HvTianv,'      ',HvTianr,'      ',HvTianh);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,strcat('%s%6.4f\t', '\n'), 'Kleinman parameter zeta(ζ)  :',Zeta);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,strcat('%s\t',repmat('%s%6.9f\t',1,3), '\n'), 'Thermal expansion(E) (K^-1) :','    ',alv,'      ',alr,'      ',alh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.9f\t',1,3), '\n'), 'Thermal expansion(Tm) (K^-1):','    ',alt,'      ',alt,'      ',alt);
+fprintf(fid,strcat('%s\t','%s%6.8f', '\n'), 'Heat Capacity J/(g K)       :','    ',Cap);
+fprintf(fid,strcat('%s\t','%s%6.4f', '\n'), 'Melting temperature (K)     :','    ',Tm);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+if AZ > teps
+    fprintf(fid,strcat('%s%6.6f\t', '\n'), 'Zener anisotropy index             :',AZ);
+else
+    fprintf(fid,'%s\n', 'Zener anisotropy index             :0.0');
+end
+if AC > teps
+    fprintf(fid,strcat('%s%6.6f\t', '\n'), 'Chung anisotropy index             :',AC);
+else
+    fprintf(fid,'%s\n', 'Chung anisotropy index             :0.0');
+end
+if AU > teps
+    fprintf(fid,strcat('%s%6.6f\t', '\n'), 'Universal anisotropy index (ROS''s) :',AU);
+else
+    fprintf(fid,'%s\n', 'Universal anisotropy index (ROS''s) :0.0');
+end
+if AL > teps
+    fprintf(fid,strcat('%s%6.6f\t', '\n'), 'Universal anisotropy index (Kube''s):',AL);
+else
+    fprintf(fid,'%s\n', 'Universal anisotropy index (Kube''s):0.0');
+end
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,'%s\r','!!!----------------------------Begin of Warning-------------------------------------------!!!');
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,'%s\r','!!The Value is not credible if you never set density, volume, atomnum, V0 and Material Type!!');
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Fracture Toughness (Mazhnik):','    ',kicv,'      ',kicr,'      ',kich);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Average sound velocity (m/s):','    ',vmv,'      ',vmr,'      ',vmh);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Debye temperature (K)       :','    ',tDv,'      ',tDr,'      ',tDh);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,'%s\r','-------------------------------Minimum thermal conductivity----------------------------------');
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Clarke (I) (W/m.K)          :','    ',kmCla1v,'      ',kmCla1r,'      ',kmCla1h);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Clarke (II) (W/m.K)         :','    ',kmCla2v,'      ',kmCla2r,'      ',kmCla2h);
+fprintf(fid,strcat('%s\t',repmat('%s%6.4f\t',1,3), '\n'), 'Cahill (W/m.K)              :','    ',kmCahv,'      ',kmCahr,'      ',kmCahh);
+fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
+fprintf(fid,'%s\r','!!!-----------------------------End of Warning--------------------------------------------!!!');
 fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
 % fprintf(fid,[repmat('%5.2f\t', 1, size(C,2)), '\n'], lamda');
 
@@ -290,6 +390,9 @@ Re.lamesth =  lamesth;
 Re.lamendv =  lamendv;
 Re.lamendr =  lamendr;
 Re.lamendh =  lamendh;
+
+Re.AZ =  AZ;
+Re.AC =  AC;
 Re.AU =  AU;
 Re.AL =  AL;
 
@@ -374,8 +477,8 @@ if Pro(1,1)
 
     % calculating the maximum and minimum of Young's Modulus and its directions.
     Emax                   = max(tmpE);
-    EmaxTheta              = theta(E == Emax);
-    EmaxPhi                = phi(E == Emax);
+    EmaxTheta              = theta(abs(E-Emax) <= teps);
+    EmaxPhi                = phi(abs(E-Emax) <= teps);
     Ehklmax                = dir2Vec(EmaxTheta,EmaxPhi);
 
     Ehklmax                = set2zeros(Ehklmax,teps);
@@ -390,8 +493,8 @@ if Pro(1,1)
 %     Emax                   = mean(-Emax);
 
     Emin                   = min(tmpE);
-    EminTheta              = theta(E == Emin);
-    EminPhi                = phi(E == Emin);
+    EminTheta              = theta(abs(E-Emax) <= teps);
+    EminPhi                = phi(abs(E-Emax) <= teps);
     Ehklmin                = dir2Vec(EminTheta,EminPhi);
 
     Ehklmin                = set2zeros(Ehklmin,teps);
@@ -416,21 +519,25 @@ if Pro(1,1)
     fprintf(fid,'%s\r','=============================================================================================');
     fprintf(fid,'%s\r','      The maximum and minimum of Young''s Modulus [Units in GPa] and its directions');
     fprintf(fid,'%s\r','=============================================================================================');
-    fprintf(fid,'%s\r', ['Anisotropy of Young''s Modulus: ',num2str(AE)]);
+    if AE > teps
+        fprintf(fid,'%s\r', ['Anisotropy of Young''s Modulus: ',num2str(AE)]);
+    else
+        fprintf(fid,'%s\r', 'Anisotropy of Young''s Modulus: 0.0');
+    end
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\t%s\t\r','Emax','Emin');
-    fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Emax Emin]);
+    fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Emax Emin]);
     fprintf(fid,'%s\r','Direction for Emax');
     fprintf(fid,'%s\t%s\t\r',' θ (Emax)',' φ (Emax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], EmaxTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], EmaxTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Emax)','y (Emax)','z (Emax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Ehklmax(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Ehklmax(end,:)');
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\r','Direction for Emin');
     fprintf(fid,'%s\t%s\t\r',' θ (Emin)',' φ (Emin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], EminTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], EminTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Emin)','y (Emin)','z (Emin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Ehklmin(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Ehklmin(end,:)');
 end
 
 if Pro(1,2)
@@ -471,8 +578,8 @@ if Pro(1,2)
 
     % calculating the maximum and minimum of Linear compressibility and its directions.
     betamax                   = max(tmpbeta);
-    betamaxTheta              = theta(beta == betamax);
-    betamaxPhi                = phi(beta == betamax);
+    betamaxTheta              = theta(abs(beta-betamax) <= teps);
+    betamaxPhi                = phi(abs(beta-betamax) <= teps);
     betahklmax                = dir2Vec(betamaxTheta,betamaxPhi);
 
     betahklmax                = set2zeros(betahklmax,teps);
@@ -487,8 +594,8 @@ if Pro(1,2)
 %     betamax                   = mean(-betamax);
 
     betamin                   = min(tmpbeta);
-    betaminTheta              = theta(beta == betamin);
-    betaminPhi                = phi(beta == betamin);
+    betaminTheta              = theta(abs(beta-betamin) <= teps);
+    betaminPhi                = phi(abs(beta-betamin) <= teps);
     betahklmin                = dir2Vec(betaminTheta,betaminPhi);
 
     betahklmin                = set2zeros(betahklmin,teps);
@@ -513,21 +620,25 @@ if Pro(1,2)
     fprintf(fid,'%s\r','=============================================================================================');
     fprintf(fid,'%s\r','    The maximum and minimum of Linear Compressibility [Units in TPa^-1] and its directions');
     fprintf(fid,'%s\r','=============================================================================================');
-    fprintf(fid,'%s\r', ['Anisotropy of Linear Compressibility: ',num2str(Abeta)]);
+    if Abeta > teps
+        fprintf(fid,'%s\r', ['Anisotropy of Linear Compressibility: ',num2str(Abeta)]);
+    else
+        fprintf(fid,'%s\r', 'Anisotropy of Linear Compressibility: 0.0');
+    end
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\t%s\t\r','betamax','betamin');
-    fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [betamax betamin]);
+    fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [betamax betamin]);
     fprintf(fid,'%s\r','Direction for betamax');
     fprintf(fid,'%s\t%s\t\r',' θ (betamax)',' φ (betamax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], betamaxTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], betamaxTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (betamax)','y (betamax)','z (betamax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], betahklmax(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], betahklmax(end,:)');
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\r','Direction for betamin');
     fprintf(fid,'%s\t%s\t\r',' θ (betamin)',' φ (betamin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], betaminTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], betaminTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (betamin)','y (betamin)','z (betamin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], betahklmin(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], betahklmin(end,:)');
 end
 
 if Pro(1,3)
@@ -546,8 +657,8 @@ if Pro(1,3)
     fclose(fidGmax);
 
     Gmmax                  = max(tmpGMax);
-    GmaxTheta              = theta(Gmax == Gmmax);
-    GmaxPhi                = phi(Gmax == Gmmax);
+    GmaxTheta              = theta(abs(Gmax-Gmmax) <= teps);
+    GmaxPhi                = phi(abs(Gmax-Gmmax) <= teps);
     Ghklmax                = dir2Vec(GmaxTheta,GmaxPhi);
 
     Ghklmax                = set2zeros(Ghklmax,teps);
@@ -571,8 +682,8 @@ if Pro(1,3)
     fclose(fidGmin);
 
     Gmminp                  = min(tmpGMinp);
-    GminpTheta              = theta(Gminp == Gmminp);
-    GminpPhi                = phi(Gminp == Gmminp);
+    GminpTheta              = theta(abs(Gminp-Gmminp) <= teps);
+    GminpPhi                = phi(abs(Gminp-Gmminp) <= teps);
     Ghklminp                = dir2Vec(GminpTheta,GminpPhi);
 
     Ghklminp                = set2zeros(Ghklminp,teps);
@@ -626,8 +737,8 @@ if Pro(1,3)
         fclose(fidGMinn);
 
         Gmminn                    = max(tmpGMinn);
-        GminnTheta                = theta(Gminn == Gmminn);
-        GminnPhi                  = phi(Gminn == Gmminn);
+        GminnTheta                = theta(abs(Gminn-Gmminn) <= teps);
+        GminnPhi                  = phi(abs(Gminn-Gmminn) <= teps);
         Ghklminn                  = dir2Vec(GminnTheta,GminnPhi);
 
         Ghklminn                  = set2zeros(Ghklminn,teps);
@@ -657,21 +768,25 @@ if Pro(1,3)
     fprintf(fid,'%s\r','=============================================================================================');
     fprintf(fid,'%s\r','        The maximum and minimum of Shear Modulus [Units in GPa] and its directions');
     fprintf(fid,'%s\r','=============================================================================================');
-    fprintf(fid,'%s\r', ['Anisotropy of Shear Modulus: ',num2str(AG)]);
+    if AG>teps
+        fprintf(fid,'%s\r', ['Anisotropy of Shear Modulus: ',num2str(AG)]);
+    else
+        fprintf(fid,'%s\r', 'Anisotropy of Shear Modulus: 0.0');
+    end
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\t%s\t\r','Gmax','Gmin');
-    fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Gmmax Gmmin]);
+    fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Gmmax Gmmin]);
     fprintf(fid,'%s\r','Direction for Gmax');
     fprintf(fid,'%s\t%s\t\r',' θ (Gmax)',' φ (Gmax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], GmaxTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], GmaxTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Gmax)','y (Gmax)','z (Gmax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Ghklmax(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Ghklmax(end,:)');
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\r','Direction for Gmin');
     fprintf(fid,'%s\t%s\t\r',' θ (Gmin)',' φ (Gmin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], GminTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], GminTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Gmin)','y (Gmin)','z (Gmin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Ghklmin(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Ghklmin(end,:)');
 end
 
 if Pro(1,4)
@@ -697,8 +812,8 @@ if Pro(1,4)
     fclose(fidPMax);
 
     Pmmax                     = max(tmpPMax);
-    PmaxTheta                 = theta(PMax == Pmmax);
-    PmaxPhi                   = phi(PMax == Pmmax);
+    PmaxTheta                 = theta(abs(PMax-Pmmax) <= teps);
+    PmaxPhi                   = phi(abs(PMax-Pmmax) <= teps);
     Phklmax                   = dir2Vec(PmaxTheta,PmaxPhi);
 
     Phklmax                   = set2zeros(Phklmax,teps);
@@ -725,8 +840,8 @@ if Pro(1,4)
     fclose(fidPMinp);
 
     Pmminp                    = min(tmpPMinp(tmpPMinp>0));
-    PminpTheta                = theta(PMinp == Pmminp);
-    PminpPhi                  = phi(PMinp == Pmminp);
+    PminpTheta                = theta(abs(PMinp-Pmminp) <= teps);
+    PminpPhi                  = phi(abs(PMinp-Pmminp) <= teps);
     Phklminp                  = dir2Vec(PminpTheta,PminpPhi);
 
     Phklminp                  = set2zeros(Phklminp,teps);
@@ -779,8 +894,8 @@ if Pro(1,4)
         fclose(fidPMinn);
 
         Pmminn                    = max(tmpPMinn);
-        PminnTheta                = theta(PMinn == Pmminn);
-        PminnPhi                  = phi(PMinn == Pmminn);
+        PminnTheta                = theta(abs(PMinn-Pmminn) <= teps);
+        PminnPhi                  = phi(abs(PMinn-Pmminn) <= teps);
         Phklminn                  = dir2Vec(PminnTheta,PminnPhi);
 
         Phklminn                  = set2zeros(Phklminn,teps);
@@ -811,7 +926,11 @@ if Pro(1,4)
     fprintf(fid,'%s\r','=============================================================================================');
     fprintf(fid,'%s\r','        The maximum and minimum of Poisson''s Ratio and its directions');
     fprintf(fid,'%s\r','=============================================================================================');
-    fprintf(fid,'%s\r', ['Anisotropy of Poisson''s Ratio: ',num2str(AP)]);
+    if AP>teps
+        fprintf(fid,'%s\r', ['Anisotropy of Poisson''s Ratio: ',num2str(AP)]);
+    else
+        fprintf(fid,'%s\r', 'Anisotropy of Poisson''s Ratio: 0.0');
+    end
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\t%s\t\r','PMax','Pmin');
     fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Pmmax Pmmin]);
@@ -867,8 +986,8 @@ if Pro(1,5)
 
     % calculating the maximum and minimum of Bulk Modulus and its directions.
     Bmax                   = max(tmpB);
-    BmaxTheta              = theta(B == Bmax);
-    BmaxPhi                = phi(B == Bmax);
+    BmaxTheta              = theta(abs(B-Bmax) <= teps);
+    BmaxPhi                = phi(abs(B-Bmax) <= teps);
     Bhklmax                = dir2Vec(BmaxTheta,BmaxPhi);
 
     Bhklmax                = set2zeros(Bhklmax,teps);
@@ -883,8 +1002,8 @@ if Pro(1,5)
 %     Bmax                   = mean(-Bmax);
 
     Bmin                   = min(tmpB);
-    BminTheta              = theta(B == Bmin);
-    BminPhi                = phi(B == Bmin);
+    BminTheta              = theta(abs(B-Bmin) <= teps);
+    BminPhi                = phi(abs(B-Bmin) <= teps);
     Bhklmin                = dir2Vec(BminTheta,BminPhi);
 
     Bhklmin                = set2zeros(Bhklmin,teps);
@@ -909,21 +1028,25 @@ if Pro(1,5)
     fprintf(fid,'%s\r','=============================================================================================');
     fprintf(fid,'%s\r','       The maximum and minimum of Bulk Modulus [Units in GPa] and its directions');
     fprintf(fid,'%s\r','=============================================================================================');
-    fprintf(fid,'%s\r', ['Anisotropy of Bulk Modulus: ',num2str(AB)]);
+    if AB>teps
+        fprintf(fid,'%s\r', ['Anisotropy of Bulk Modulus: ',num2str(AB)]);
+    else
+        fprintf(fid,'%s\r', 'Anisotropy of Bulk Modulus: 0.0');
+    end
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\t%s\t\r','Bmax','Bmin');
-    fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Bmax Bmin]);
+    fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Bmax Bmin]);
     fprintf(fid,'%s\r','Direction for Bmax');
     fprintf(fid,'%s\t%s\t\r',' θ (Bmax)',' φ (Bmax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], BmaxTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], BmaxTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Bmax)','y (Bmax)','z (Bmax)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Bhklmax(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Bhklmax(end,:)');
     fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
     fprintf(fid,'%s\r','Direction for Bmin');
     fprintf(fid,'%s\t%s\t\r',' θ (Bmin)',' φ (Bmin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], BminTP(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], BminTP(end,:)');
     fprintf(fid,'%s\t%s\t%s\t\r','x (Bmin)','y (Bmin)','z (Bmin)');
-    fprintf(fid,[repmat('%5.2f\t', 1, 3), '\n'], Bhklmin(end,:)');
+    fprintf(fid,[repmat('%5.6f\t', 1, 3), '\n'], Bhklmin(end,:)');
 end
 
 if Pro(1,6)
@@ -955,8 +1078,8 @@ if Pro(1,6)
         fclose(fidPrmax);
 
         Prmmax                 = max(Prmax(:));
-        PrmaxTheta             = theta(Prmax == Prmmax);
-        PrmaxPhi               = phi(Prmax == Prmmax);
+        PrmaxTheta             = theta(abs(Prmax-Prmmax) <= teps);
+        PrmaxPhi               = phi(abs(Prmax-Prmmax) <= teps);
         Prhklmax               = dir2Vec(PrmaxTheta,PrmaxPhi);
 
         Prhklmax               = set2zeros(Prhklmax,teps);
@@ -976,8 +1099,8 @@ if Pro(1,6)
         fclose(fidPrmin);
 
         Prmmin                 = min(Prmin(:));
-        PrminTheta             = theta(Prmin == Prmmin);
-        PrminPhi               = phi(Prmin == Prmmin);
+        PrminTheta             = theta(abs(Prmin-Prmmin) <= teps);
+        PrminPhi               = phi(abs(Prmin-Prmmin) <= teps);
         Prhklmin               = dir2Vec(PrminTheta,PrminPhi);
 
         Prhklmin               = set2zeros(Prhklmin,teps);
@@ -997,7 +1120,7 @@ if Pro(1,6)
         Re.Prmmin               = Prmmin;
         Re.PrminTP              = PrminTP;
         Re.Prhklmin             = Prhklmin;
-        
+
         if inputData.avgout
             Pravg                = reshape(mean(Pr),nphi,ntheta);
             % save avg Pugh ratio in .dat file
@@ -1012,7 +1135,11 @@ if Pro(1,6)
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r','        The maximum and minimum of Pugh ratio and its directions');
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Pugh ratio: ',num2str(APr)]);
+        if APr>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Pugh ratio: ',num2str(APr)]);
+        else
+            fprintf(fid,'%s\r', 'Anisotropy of Pugh ratio: 0.0');
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','PrMax','Prmin');
         fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Prmmax Prmmin]);
@@ -1041,7 +1168,7 @@ if Pro(1,7) && ~isempty(inputData.HvModel)
                 [tmpE,~,~] = calcYoung(thph,S,ntheta2d,plane,'3D');
                 Uin        = repmat(tmpE',nchi,1);
             end
-            
+
             if Pro(1,4) % For Possion input
                 Vin     = P;
             else
@@ -1085,8 +1212,8 @@ if Pro(1,7) && ~isempty(inputData.HvModel)
         fclose(fidHvmax);
 
         Hvmmax                 = max(Hvmax(:));
-        HvmaxTheta             = theta(Hvmax == Hvmmax);
-        HvmaxPhi               = phi(Hvmax == Hvmmax);
+        HvmaxTheta             = theta(abs(Hvmax-Hvmmax) <= teps);
+        HvmaxPhi               = phi(abs(Hvmax-Hvmmax) <= teps);
         Hvhklmax               = dir2Vec(HvmaxTheta,HvmaxPhi);
 
         Hvhklmax               = set2zeros(Hvhklmax,teps);
@@ -1108,8 +1235,8 @@ if Pro(1,7) && ~isempty(inputData.HvModel)
         fclose(fidHvmin);
 
         Hvmmin                 = min(Hvmin(:));
-        HvminTheta             = theta(Hvmin == Hvmmin);
-        HvminPhi               = phi(Hvmin == Hvmmin);
+        HvminTheta             = theta(abs(Hvmin -Hvmmin) <= teps);
+        HvminPhi               = phi(abs(Hvmin -Hvmmin) <= teps);
         Hvhklmin               = dir2Vec(HvminTheta,HvminPhi);
 
         Hvhklmin               = set2zeros(Hvhklmin,teps);
@@ -1146,7 +1273,11 @@ if Pro(1,7) && ~isempty(inputData.HvModel)
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r','        The maximum and minimum of Vickers hardness [Units in GPa] and its directions');
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Vickers hardness: ',num2str(AHv)]);
+        if AHv>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Vickers hardness: ',num2str(AHv)]);
+        else
+            fprintf(fid,'%s\r', 'Anisotropy of Vickers hardness: 0.0');
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','HvMax','Hvmin');
         fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Hvmmax Hvmmin]);
@@ -1175,7 +1306,7 @@ if Pro(1,8) && ~isempty(inputData.KIC.model)
                 [tmpE,~,~] = calcYoung(thph,S,ntheta2d,plane,'3D');
                 UKin       = repmat(tmpE',nchi,1);
             end
-            
+
             if Pro(1,4) % For Possion input
                 VKin     = P;
             else
@@ -1217,8 +1348,8 @@ if Pro(1,8) && ~isempty(inputData.KIC.model)
         fclose(fidKicmax);
 
         Kicmmax                 = max(Kicmax(:));
-        KicmaxTheta             = theta(Kicmax == Kicmmax);
-        KicmaxPhi               = phi(Kicmax == Kicmmax);
+        KicmaxTheta             = theta(abs(Kicmax -Kicmmax) <= teps);
+        KicmaxPhi               = phi(abs(Kicmax -Kicmmax) <= teps);
         Kichklmax               = dir2Vec(KicmaxTheta,KicmaxPhi);
 
         Kichklmax               = set2zeros(Kichklmax,teps);
@@ -1238,8 +1369,8 @@ if Pro(1,8) && ~isempty(inputData.KIC.model)
         fclose(fidKicmin);
 
         Kicmmin                 = min(Kicmin(:));
-        KicminTheta             = theta(Kicmin == Kicmmin);
-        KicminPhi               = phi(Kicmin == Kicmmin);
+        KicminTheta             = theta(abs(Kicmin -Kicmmin) <= teps);
+        KicminPhi               = phi(abs(Kicmin -Kicmmin) <= teps);
         Kichklmin               = dir2Vec(KicminTheta,KicminPhi);
 
         Kichklmin               = set2zeros(Kichklmin,teps);
@@ -1274,7 +1405,11 @@ if Pro(1,8) && ~isempty(inputData.KIC.model)
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r','        The maximum and minimum of Fracture Toughness [Units in MPa m^(1/2)] and its directions');
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Fracture Toughness: ',num2str(AKic)]);
+        if AKic>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Fracture Toughness: ',num2str(AKic)]);
+        else
+            fprintf(fid,'%s\r', 'Anisotropy of Fracture Toughness: 0.0');
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','KicMax','Kicmin');
         fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Kicmmax Kicmmin]);
@@ -1329,7 +1464,7 @@ for pk = 1:lenC
 
         % calculating the maximum and minimum of Young's Modulus and its directions.
         E2dmax                   = max(E2d);
-        E2dmaxTheta              = theta2d(E2d == E2dmax);
+        E2dmaxTheta              = theta2d(abs(E2d -E2dmax) <= teps);
 %         [E2dmax,E2dmaxTheta,~]   = maxminSearch(E2dmaxTheta,@(x) -calcYoung(x,S,ntheta2d,planeC,'2D'),teps);
         E2dmaxTheta              = unique(E2dmaxTheta);
         E2dmaxXY                 = dir2Vec2d(E2dmaxTheta);
@@ -1354,21 +1489,25 @@ for pk = 1:lenC
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r',strcat(' The maximum and minimum of Young''s Modulus [Units in GPa] and its directions in plane (',planeName,')'));
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Young''s Modulus in plane (',planeName,')',': ',num2str(AE2d)]);
+        if AE2d>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Young''s Modulus in plane (',planeName,')',': ',num2str(AE2d)]);
+        else
+            fprintf(fid,'%s\r', ['Anisotropy of Young''s Modulus in plane (',planeName,')',': 0.0']);
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','E2dmax','E2dmin');
-        fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [E2dmax E2dmin]);
+        fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [E2dmax E2dmin]);
         fprintf(fid,'%s\r','Direction for E2dmax');
         fprintf(fid,'%s\t\r',' θ (E2dmax)');
-        fprintf(fid,'%5.2f\t\n', E2dmaxTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', E2dmaxTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (E2dmax)','y (E2dmax)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], E2dmaxXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], E2dmaxXY(end,:));
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\r','Direction for E2dmin');
         fprintf(fid,'%s\t\r',' θ (E2dmin)');
-        fprintf(fid,'%5.2f\t\n', E2dminTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', E2dminTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (E2dmin)','y (E2dmin)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], E2dminXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], E2dminXY(end,:));
     end
 
     if Pro(2,2)
@@ -1377,14 +1516,14 @@ for pk = 1:lenC
         Abeta2d                = calcAnisotropy(beta2d);
         % calculating the maximum and minimum of Linear compressibility and its directions.
         beta2dmax                     = max(beta2d);
-        beta2dmaxTheta                = theta2d(beta2d == beta2dmax);
+        beta2dmaxTheta                = theta2d(abs(beta2d -beta2dmax) <= teps);
 %         [beta2dmax,beta2dmaxTheta,~]  = maxminSearch(beta2dmaxTheta,@(x) -calcCompress(x,S,ntheta2d,planeC,'2D'),teps);
         beta2dmaxTheta                = unique(beta2dmaxTheta);
         beta2dmaxXY                   = dir2Vec2d(beta2dmaxTheta);
 %         beta2dmax                     = mean(-beta2dmax);
 
         beta2dmin                     = min(beta2d);
-        beta2dminTheta                = theta2d(beta2d == beta2dmin);
+        beta2dminTheta                = theta2d(abs(beta2d -beta2dmin) <= teps);
 %         [beta2dmin,beta2dminTheta,~]  = maxminSearch(beta2dminTheta,@(x) calcCompress(x,S,ntheta2d,planeC,'2D'),teps);
         beta2dminTheta                = unique(beta2dminTheta);
         beta2dminXY                   = dir2Vec2d(beta2dminTheta);
@@ -1425,21 +1564,25 @@ for pk = 1:lenC
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r',strcat(' The maximum and minimum of Linear Compressibility [Units in GPa] and its directions in plane (',planeName,')'));
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Linear Compressibility in plane (',planeName,')',': ',num2str(Abeta2d)]);
+        if Abeta2d>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Linear Compressibility in plane (',planeName,')',': ',num2str(Abeta2d)]);
+        else
+            fprintf(fid,'%s\r', ['Anisotropy of Linear Compressibility in plane (',planeName,')',': 0.0']);
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','beta2dmax','beta2dmin');
-        fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [beta2dmax beta2dmin]);
+        fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [beta2dmax beta2dmin]);
         fprintf(fid,'%s\r','Direction for beta2dmax');
         fprintf(fid,'%s\t\r',' θ (beta2dmax)');
-        fprintf(fid,'%5.2f\t\n', beta2dmaxTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', beta2dmaxTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (beta2dmax)','y (beta2dmax)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], beta2dmaxXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], beta2dmaxXY(end,:));
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\r','Direction for beta2dmin');
         fprintf(fid,'%s\t\r',' θ (beta2dmin)');
-        fprintf(fid,'%5.2f\t\n', beta2dminTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', beta2dminTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (beta2dmin)','y (beta2dmin)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], beta2dminXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], beta2dminXY(end,:));
     end
 
     if Pro(2,3)
@@ -1451,7 +1594,7 @@ for pk = 1:lenC
         G2dmax                    = getMaxMinNeg(G2d,'max')';
 
         G2dmmax                   = max(G2d(:));
-        G2dmaxTheta               = theta2d(G2dmax == G2dmmax);
+        G2dmaxTheta               = theta2d(abs(G2dmax -G2dmmax) <= teps);
 %         [G2dmmax,G2dmaxTheta,~]   = maxminSearch(G2dmaxTheta,@(x) -calcShear(x,nchi,S,ntheta2d,planeC,'max','2D'),teps);
         G2dmaxTheta               = unique(G2dmaxTheta);
         G2dmaxXY                  = dir2Vec2d(G2dmaxTheta);
@@ -1459,7 +1602,7 @@ for pk = 1:lenC
 
         G2dminp                   = getMaxMinNeg(G2d,'min')';
         G2dmminp                  = min(G2dminp(:));
-        G2dminpTheta              = theta2d(G2dminp == G2dmminp);
+        G2dminpTheta              = theta2d(abs(G2dminp -G2dmminp) <= teps);
 %         [G2dmminp,G2dminpTheta,~] = maxminSearch(G2dminpTheta,@(x) calcShear(x,nchi,S,ntheta2d,planeC,'min','2D'),teps);
         G2dminpTheta               = unique(G2dminpTheta);
         G2dminpXY                 = dir2Vec2d(G2dminpTheta);
@@ -1484,7 +1627,7 @@ for pk = 1:lenC
             G2dminn                   = getMaxMinNeg(G2d,'neg')';
 
             G2dmminn                  = max(G2dminn);
-            G2dminnTheta              = theta2d(G2dminn == G2dmminn);
+            G2dminnTheta              = theta2d(abs(G2dminn -G2dmminn) <= teps);
 %             [G2dmminn,G2dminnTheta,~] = maxminSearch(G2dminnTheta,@(x) -calcShear(x,nchi,S,ntheta2d,planeC,'neg','2D'),teps);
             G2dminnTheta              = unique(G2dminnTheta);
             G2dminnXY                 = dir2Vec2d(G2dminnTheta);
@@ -1539,21 +1682,25 @@ for pk = 1:lenC
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r',strcat(' The maximum and minimum of Shear Modulus [Units in GPa] and its directions in plane (',planeName,')'));
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Shear Modulus in plane (',planeName,')',': ',num2str(AG2d)]);
+        if AG2d>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Shear Modulus in plane (',planeName,')',': ',num2str(AG2d)]);
+        else
+            fprintf(fid,'%s\r', ['Anisotropy of Shear Modulus in plane (',planeName,')',': 0.0']);
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','G2dmax','G2dmin');
-        fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [G2dmmax G2dmin]);
+        fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [G2dmmax G2dmin]);
         fprintf(fid,'%s\r','Direction for G2dmax');
         fprintf(fid,'%s\t\r',' θ (G2dmax)');
-        fprintf(fid,'%5.2f\t\n', G2dmaxTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', G2dmaxTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (G2dmax)','y (G2dmax)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], G2dmaxXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], G2dmaxXY(end,:));
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\r','Direction for G2dmin');
         fprintf(fid,'%s\t\r',' θ (G2dmin)');
-        fprintf(fid,'%5.2f\t\n', G2dminTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', G2dminTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (G2dmin)','y (G2dmin)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], G2dminXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], G2dminXY(end,:));
     end
 
     if Pro(2,4)
@@ -1656,21 +1803,25 @@ for pk = 1:lenC
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r',strcat(' The maximum and minimum of Poisson''s Ratio [Units in GPa] and its directions in plane (',planeName,')'));
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Poisson''s Ratio in plane (',planeName,')',': ',num2str(AP2d)]);
+        if AP2d>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Poisson''s Ratio in plane (',planeName,')',': ',num2str(AP2d)]);
+        else
+            fprintf(fid,'%s\r', ['Anisotropy of Poisson''s Ratio in plane (',planeName,')',': 0.0']);
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','P2dmax','P2dmin');
-        fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [P2dmmax P2dmin]);
+        fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [P2dmmax P2dmin]);
         fprintf(fid,'%s\r','Direction for P2dmax');
         fprintf(fid,'%s\t\r',' θ (P2dmax)');
-        fprintf(fid,'%5.2f\t\n', P2dmaxTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', P2dmaxTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (P2dmax)','y (P2dmax)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], P2dmaxXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], P2dmaxXY(end,:));
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\r','Direction for P2dmin');
         fprintf(fid,'%s\t\r',' θ (P2dmin)');
-        fprintf(fid,'%5.2f\t\n', P2dminTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', P2dminTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (P2dmin)','y (P2dmin)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], P2dminXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], P2dminXY(end,:));
     end
 
     if Pro(2,5)
@@ -1728,21 +1879,25 @@ for pk = 1:lenC
         fprintf(fid,'%s\r','=============================================================================================');
         fprintf(fid,'%s\r',strcat(' The maximum and minimum of Bulk Modulus [Units in GPa] and its directions in plane (',planeName,')'));
         fprintf(fid,'%s\r','=============================================================================================');
-        fprintf(fid,'%s\r', ['Anisotropy of Bulk Modulus in plane (',planeName,')',': ',num2str(AB2d)]);
+        if AB2d>teps
+            fprintf(fid,'%s\r', ['Anisotropy of Bulk Modulus in plane (',planeName,')',': ',num2str(AB2d)]);
+        else
+            fprintf(fid,'%s\r', ['Anisotropy of Bulk Modulus in plane (',planeName,')',': 0.0']);
+        end
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\t%s\t\r','B2dmax','B2dmin');
-        fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [B2dmax B2dmin]);
+        fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [B2dmax B2dmin]);
         fprintf(fid,'%s\r','Direction for B2dmax');
         fprintf(fid,'%s\t\r',' θ (B2dmax)');
-        fprintf(fid,'%5.2f\t\n', B2dmaxTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', B2dmaxTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (B2dmax)','y (B2dmax)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], B2dmaxXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], B2dmaxXY(end,:));
         fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
         fprintf(fid,'%s\r','Direction for B2dmin');
         fprintf(fid,'%s\t\r',' θ (B2dmin)');
-        fprintf(fid,'%5.2f\t\n', B2dminTheta(end,:));
+        fprintf(fid,'%5.6f\t\n', B2dminTheta(end,:));
         fprintf(fid,'%s\t%s\t\r','x (B2dmin)','y (B2dmin)');
-        fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], B2dminXY(end,:));
+        fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], B2dminXY(end,:));
     end
 
     if Pro(2,6)
@@ -1753,7 +1908,7 @@ for pk = 1:lenC
         else
             [Gin2d,~] = calcShear([],nchi,S,ntheta2d,planeC,'normal','2D');
         end
-        
+
         if Pro(2,5) % For Bulk input
             Bin2d    = repmat(B2d',nchi,1);
         else
@@ -1797,21 +1952,25 @@ for pk = 1:lenC
             fprintf(fid,'%s\r','=============================================================================================');
             fprintf(fid,'%s\r',strcat(' The maximum and minimum of Pugh ratio [Units in GPa] and its directions in plane (',planeName,')'));
             fprintf(fid,'%s\r','=============================================================================================');
-            fprintf(fid,'%s\r', ['Anisotropy of Pugh ratio in plane (',planeName,')',': ',num2str(APr2d)]);
+            if APr2d>teps
+                fprintf(fid,'%s\r', ['Anisotropy of Pugh ratio in plane (',planeName,')',': ',num2str(APr2d)]);
+            else
+                fprintf(fid,'%s\r', ['Anisotropy of Pugh ratio in plane (',planeName,')',': 0.0']);
+            end
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\t%s\t\r','Pr2dmax','Pr2dmin');
-            fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Pr2dmmax Pr2dmmin]);
+            fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Pr2dmmax Pr2dmmin]);
             fprintf(fid,'%s\r','Direction for Pr2dmax');
             fprintf(fid,'%s\t\r',' θ (Pr2dmax)');
-            fprintf(fid,'%5.2f\t\n', Pr2dmaxTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Pr2dmaxTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Pr2dmax)','y (Pr2dmax)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Pr2dmaxXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Pr2dmaxXY(end,:));
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\r','Direction for Pr2dmin');
             fprintf(fid,'%s\t\r',' θ (Pr2dmin)');
-            fprintf(fid,'%5.2f\t\n', Pr2dminTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Pr2dminTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Pr2dmin)','y (Pr2dmin)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Pr2dminXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Pr2dminXY(end,:));
         end
     end
 
@@ -1895,21 +2054,25 @@ for pk = 1:lenC
             fprintf(fid,'%s\r','=============================================================================================');
             fprintf(fid,'%s\r',strcat(' The maximum and minimum of Vickers hardness [Units in GPa] and its directions in plane (',planeName,')'));
             fprintf(fid,'%s\r','=============================================================================================');
-            fprintf(fid,'%s\r', ['Anisotropy of Vickers hardness in plane (',planeName,')',': ',num2str(AHv2d)]);
+            if AHv2d>teps
+                fprintf(fid,'%s\r', ['Anisotropy of Vickers hardness in plane (',planeName,')',': ',num2str(AHv2d)]);
+            else
+                fprintf(fid,'%s\r', ['Anisotropy of Vickers hardness in plane (',planeName,')',': 0.0']);
+            end
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\t%s\t\r','Hv2dmax','Hv2dmin');
-            fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Hv2dmmax Hv2dmmin]);
+            fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Hv2dmmax Hv2dmmin]);
             fprintf(fid,'%s\r','Direction for Hv2dmax');
             fprintf(fid,'%s\t\r',' θ (Hv2dmax)');
-            fprintf(fid,'%5.2f\t\n', Hv2dmaxTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Hv2dmaxTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Hv2dmax)','y (Hv2dmax)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Hv2dmaxXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Hv2dmaxXY(end,:));
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\r','Direction for Hv2dmin');
             fprintf(fid,'%s\t\r',' θ (Hv2dmin)');
-            fprintf(fid,'%5.2f\t\n', Hv2dminTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Hv2dminTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Hv2dmin)','y (Hv2dmin)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Hv2dminXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Hv2dminXY(end,:));
         end
     end
 
@@ -1918,7 +2081,7 @@ for pk = 1:lenC
 
         switch(inputData.KIC.model)
             case {'M','Mazhnik'}
-                
+
                 if Pro(2,1) % For Young input
                     UKin2d     = repmat(E2d',nchi,1);
                 else
@@ -1994,21 +2157,25 @@ for pk = 1:lenC
             fprintf(fid,'%s\r','=============================================================================================');
             fprintf(fid,'%s\r',strcat(' The maximum and minimum of Fracture Toughness [Units in MPa.m^(1/2)] and its directions in plane (',planeName,')'));
             fprintf(fid,'%s\r','=============================================================================================');
-            fprintf(fid,'%s\r', ['Anisotropy of Fracture Toughness in plane (',planeName,')',': ',num2str(AKic2d)]);
+            if AKic2d>teps
+                fprintf(fid,'%s\r', ['Anisotropy of Fracture Toughness in plane (',planeName,')',': ',num2str(AKic2d)]);
+            else
+                fprintf(fid,'%s\r', ['Anisotropy of Fracture Toughness in plane (',planeName,')',': 0.0']);
+            end
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\t%s\t\r','Kic2dmax','Kic2dmin');
-            fprintf(fid,[repmat('%5.2f\t',1,2),'\n'], [Kic2dmmax Kic2dmmin]);
+            fprintf(fid,[repmat('%5.4f\t',1,2),'\n'], [Kic2dmmax Kic2dmmin]);
             fprintf(fid,'%s\r','Direction for Kic2dmax');
             fprintf(fid,'%s\t\r',' θ (Kic2dmax)');
-            fprintf(fid,'%5.2f\t\n', Kic2dmaxTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Kic2dmaxTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Kic2dmax)','y (Kic2dmax)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Kic2dmaxXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Kic2dmaxXY(end,:));
             fprintf(fid,'%s\r','---------------------------------------------------------------------------------------------');
             fprintf(fid,'%s\r','Direction for Kic2dmin');
             fprintf(fid,'%s\t\r',' θ (Kic2dmin)');
-            fprintf(fid,'%5.2f\t\n', Kic2dminTheta(end,:));
+            fprintf(fid,'%5.6f\t\n', Kic2dminTheta(end,:));
             fprintf(fid,'%s\t%s\t\r','x (Kic2dmin)','y (Kic2dmin)');
-            fprintf(fid,[repmat('%5.2f\t', 1, 2), '\n'], Kic2dminXY(end,:));
+            fprintf(fid,[repmat('%5.6f\t', 1, 2), '\n'], Kic2dminXY(end,:));
         end
     end
 end

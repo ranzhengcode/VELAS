@@ -41,6 +41,30 @@ if mLegel
             pressure = str2num(prs);
         end
 
+        % Density
+        den          = get(VELAS.baseden,'String');
+        if isempty(den)
+            pressure = 1.0;     % default:1.0 g/cm^3
+        else
+            density = str2num(den);
+        end
+
+        % Volume
+        vol          = get(VELAS.basevol,'String');
+        if isempty(vol)
+            volume = 1.0;     % default:1.0 A^3
+        else
+            volume = str2num(vol);
+        end
+
+        % For structure under pressure
+        atomn          = get(VELAS.baseatomn,'String');
+        if isempty(atomn)
+            atomnum = 0;     % default:0 GPa
+        else
+            atomnum = str2num(atomn);
+        end
+
         % mesh number of theta(θ) (default:200), phi(φ) (default:400), chi (χ) (default:400)
 
         mesh3d       = get(VELAS.basenmesh3d,'String');
@@ -158,11 +182,11 @@ if mLegel
         %% Properties
         %{
                 properties — Pro(2*8)
-    
+
                         Young   Compressibility  Shear   Poisson  Bulk    Pugh Ratio   Hardness   Fracture Toughness
             3D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
             2D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
-    
+
             Young3D             — Pro(1,1),  Young2D             — Pro(2,1);
             Compressibility3D   — Pro(1,2),  Compressibility2D   — Pro(2,2);
             Shear3D             — Pro(1,3),  Shear2D             — Pro(2,3);
@@ -196,16 +220,16 @@ if mLegel
         else
             proHv   = 0;
         end
-        
+
 
         KICtype   = get(VELAS.proKICtppop,'Value'); % Fracture Toughness (KIC, MPa*m^(1/2))
         KICmode   = get(VELAS.proKICmdpop,'Value');
-        KIC       = []; 
+        KIC       = [];
         switch(KICtype)
             case 2
                 KIC.material = 'IC';
             case 3
-                KIC.material = 'PM';
+                KIC.material = 'M';
             case 4
                 KIC.material = 'IM';
         end
@@ -238,10 +262,17 @@ if mLegel
         end
 
         % % For fracture toughness Parameters
-        V0  = get(VELAS.proKICV0,'String');
-        
-        if ~isempty(V0)
-            KIC.V0 = str2num(V0);
+        V0  = get(VELAS.proKICV0,'String');   % In fact, V0 = volume/atomnum.
+        if density ~= 1 && volume ~= 1
+            KIC.V0 = volume/atomnum;
+            set(VELAS.proKICV0,'String',num2str(KIC.V0,5));
+        else
+            if ~isempty(V0)
+                KIC.V0 = str2num(V0);
+            else
+                KIC.V0 = 1.0;
+                 set(VELAS.proKICV0,'String',num2str(KIC.V0,5));
+            end
         end
 
         gEFr = get(VELAS.proKICgEFr,'String');
@@ -314,8 +345,7 @@ if mLegel
         % Output filename
         filename        = get(VELAS.Cfname,'String');
         if isempty(filename)
-            
-            filename    = strcat(pwd,filesep,'VELAS',strrep(datestr(now,'yyyymmddHH:MM:SS'),':',''),'.txt');
+            filename    = strcat(pwd,filesep,'VELAS',datestr(now,'ddHHMMSS'),'.txt');
             set(VELAS.Cfname,'String',filename);
         end
         Re.filename     = filename;
@@ -323,6 +353,9 @@ if mLegel
         Re.S            = S;
         Re.cryType      = cryType;
         Re.pressure     = pressure;
+        Re.density      = density;
+        Re.volume       = volume;
+        Re.atomnum      = atomnum;
         Re.ntheta       = ntheta;
         Re.nphi         = nphi;
         Re.nchi         = nchi;

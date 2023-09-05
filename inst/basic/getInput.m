@@ -9,18 +9,30 @@ function Re = getInput(filename)
 %}
 
 C   = zeros(6,6);
-     
+
 fid = fopen(filename,'r+');
 
 % For full Stifness matrix C
 Cflag    = false;
 Sflag    = false;
 ck       = 0;
-lne1  = 0; lne2  = 0; lne3 = 0; lne4 = 0; lne5 = 0; lne6 = 0;
+lne1     = 0; lne2  = 0; lne3 = 0; lne4 = 0; lne5 = 0; lne6 = 0;
 cryType  = 'none';
 
 % For structure under pressure
 pressure     = 0;     % default:0 GPa
+
+% molar mass of crystal cell (g/mol)
+molarmass    = 1.0;     % default:1.0
+
+% volume of crystal cell (Å^3 [Angstrom^3])
+volume       = 1.0;     % default:1 Å^3 (Angstrom^3)
+
+% density of crystal cell (g/cm^3)
+density      = 1.0;     % default:1 g/cm^3
+
+% total number of atoms in crystal cell
+atomnum      = 1;     % % default:1
 
 % mesh number of theta(θ) (default:200), phi(φ) (default:400), chi (χ) (default:400)
 ntheta       = 200;
@@ -42,11 +54,11 @@ Re.mpapiver = 'new';
 % For properties
 %{
                 properties — Pro(2*8)
-    
+
                         Young   Compressibility  Shear   Poisson  Bulk    Pugh Ratio   Hardness   Fracture Toughness
             3D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
             2D mode:    1/0         1/0          1/0      1/0      1/0      1/0          1/0              1/0
-            
+
             1: to be calculated, 0: not to be calculated.
 
             Young3D             — Pro(1,1),  Young2D             — Pro(2,1);
@@ -69,8 +81,8 @@ Re.HvModel = '';
 
 % For fracture toughness
 
-KIC.model    = '';
-KIC.material = '';
+KIC.model    = 'M';  % Mazhnik's model
+KIC.material = 'M';  % Metal
 KIC.V0       = 0.0;
 KIC.gEFr     = 0.0;
 KIC.m        = 0.0;
@@ -111,12 +123,12 @@ while true
         % Check the comments section
         tline  = strtrim(tline);     % remove leading and trailing whitespace
         locpen = find(tline == '#'); % find the location of #
-        if ~isempty(locpen)         
-            if locpen ~= 1           
+        if ~isempty(locpen)
+            if locpen ~= 1
                 tline = strtrim(tline(1:locpen-1));
             end
         end
-        
+
         % main code
         if ~isempty(strfind(tline,'#')) || isempty(tline)
             continue;
@@ -149,7 +161,7 @@ while true
                 C = C+triu(C,1)';
             elseif ~isempty(strfind(lower(tline),'hexa '))
                 cubi    = regexp(tline,'\ ','split');
-                cryType = 'Hexagonal'; 
+                cryType = 'Hexagonal';
                 dataL = cellfun(@str2num,cubi(2:end));
                 % Hexagonal: 5 independent elastic constants: C11, C33, C44, C12, C13
                 C(1,1) = dataL(1);
@@ -166,8 +178,8 @@ while true
             elseif ~isempty(strfind(lower(tline),'tetr '))
                 cubi  = regexp(tline,'\ ','split');
                 dataL = cellfun(@str2num,cubi(2:end));
-                
-                cryType = 'Tetragonal'; 
+
+                cryType = 'Tetragonal';
                 % Tetragonal: tpye1: 6 independent elastic constants: C11, C33, C44, C66, C12, C13
                 % Tetragonal: tpye2: 7 independent elastic constants: C11, C33, C44, C66, C12, C13, C16
                 len = length(dataL);
@@ -202,7 +214,7 @@ while true
             elseif ~isempty(strfind(lower(tline),'trig '))
                 cubi  = regexp(tline,'\ ','split');
                 dataL = cellfun(@str2num,cubi(2:end));
-                
+
                 cryType = 'Trigonal';
                 % Trigonal: type1: 6 independent elastic constants: C11, C33, C44, C12, C13, C14
                 % Trigonal: type2: 7 independent elastic constants: C11, C33, C44, C12, C13, C14, C15
@@ -371,6 +383,18 @@ while true
             elseif ~isempty(strfind(lower(tline),'pressure '))
                 presre   = regexp(tline,'\ ','split');
                 pressure = str2num(presre{2});
+            elseif ~isempty(strfind(lower(tline),'molarmass '))
+                masstr   = regexp(tline,'\ ','split');
+                molarmass   = str2num(masstr{2});
+            elseif ~isempty(strfind(lower(tline),'volume '))
+                volstr   = regexp(tline,'\ ','split');
+                volume   = str2num(volstr{2});
+            elseif ~isempty(strfind(lower(tline),'density '))
+                denstr   = regexp(tline,'\ ','split');
+                density  = str2num(denstr{2});
+            elseif ~isempty(strfind(lower(tline),'atomnum '))
+                atomstr   = regexp(tline,'\ ','split');
+                atomnum   = str2num(atomstr{2});
             elseif ~isempty(strfind(lower(tline),'nmesh3d '))
                 nm3d     = regexp(tline,'\ ','split');
                 dataL    = cellfun(@str2num,nm3d(2:end));
@@ -427,208 +451,198 @@ while true
                 KIC.material = KicM{3};
 
                 dataL = cellfun(@str2num,KicM(4:end));
-                
+
                 switch(KIC.model)
                     case {'N','Niu'}
                         switch(KIC.material)
                             case 'IC'
-                              if isequal(dataL(1),0)
-                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.V0     = dataL(1);
-                              end
+                                if isequal(dataL(1),0)
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
+                                    end
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
                             case 'M'
-                              if isequal(dataL(1),0)
-                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.V0     = dataL(1);
-                              end
-                              if isequal(dataL(2),0)
-                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.gEFr   = dataL(2);
-                              end
+                                if isequal(dataL(1),0)
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
+                                    end
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
+                                if isequal(dataL(2),0)
+                                    hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.gEFr   = dataL(2);
+                                end
                             case 'IM'
-                               if isequal(dataL(1),0)
-                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.V0     = dataL(1);
-                              end
-                              if isequal(dataL(2),0)
-                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.gEFr   = dataL(2);
-                              end
-                              if isequal(dataL(3),0)
-                                  hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.m      = dataL(3);
-                              end
-                              if isequal(dataL(4),0)
-                                  hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.n      = dataL(4);
-                              end
-                              if isequal(dataL(5),0)
-                                  hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.XA     = dataL(5);
-                              end
-                              if isequal(dataL(6),0)
-                                  hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.XB     = dataL(6);
-                              end
+                                if isequal(dataL(1),0)
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
+                                    end
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
+                                if isequal(dataL(2),0)
+                                    hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.gEFr   = dataL(2);
+                                end
+                                if isequal(dataL(3),0)
+                                    hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.m      = dataL(3);
+                                end
+                                if isequal(dataL(4),0)
+                                    hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.n      = dataL(4);
+                                end
+                                if isequal(dataL(5),0)
+                                    hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.XA     = dataL(5);
+                                end
+                                if isequal(dataL(6),0)
+                                    hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.XB     = dataL(6);
+                                end
                         end
                     case {'M','Mazhnik'}
-                       switch(KIC.material)
+                        switch(KIC.material)
                             case 'IC'
                                 if isequal(dataL(1),0)
-                                    hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                    pause(0.5);
-                                    if ishandle(hmsg)
-                                        close(hmsg);
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
                                     end
-                                    KIC.model    = '';
-                                    KIC.material = '';
                                 else
                                     KIC.V0     = dataL(1);
                                 end
                             case 'M'
                                 if isequal(dataL(1),0)
-                                    hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                    pause(0.5);
-                                    if ishandle(hmsg)
-                                        close(hmsg);
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
                                     end
-                                    KIC.model    = '';
-                                    KIC.material = '';
                                 else
                                     KIC.V0     = dataL(1);
                                 end
                             case 'IM'
-                              if isequal(dataL(1),0)
-                                  hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.V0     = dataL(1);
-                              end
-                              if isequal(dataL(2),0)
-                                  hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.gEFr   = dataL(2);
-                              end
-                              if isequal(dataL(3),0)
-                                  hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.m      = dataL(3);
-                              end
-                              if isequal(dataL(4),0)
-                                  hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.n      = dataL(4);
-                              end
-                              if isequal(dataL(5),0)
-                                  hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.XA     = dataL(5);
-                              end
-                              if isequal(dataL(6),0)
-                                  hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
-                                  pause(0.5);
-                                  if ishandle(hmsg)
-                                      close(hmsg);
-                                  end
-                                  KIC.model    = '';
-                                  KIC.material = '';
-                              else
-                                  KIC.XB     = dataL(6);
-                              end
-                       end
-                end 
+                                if isequal(dataL(1),0)
+                                    if density ~= 1 && volume ~= 1
+                                        KIC.V0 = volume/atomnum;
+                                    else
+                                        hmsg = msgbox('V0 cannot be 0!', 'VELAS reminder','help');
+                                        pause(0.5);
+                                        if ishandle(hmsg)
+                                            close(hmsg);
+                                        end
+                                    end
+                                else
+                                    KIC.V0     = dataL(1);
+                                end
+                                if isequal(dataL(2),0)
+                                    hmsg = msgbox('gEFr cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.gEFr   = dataL(2);
+                                end
+                                if isequal(dataL(3),0)
+                                    hmsg = msgbox('m cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.m      = dataL(3);
+                                end
+                                if isequal(dataL(4),0)
+                                    hmsg = msgbox('n cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.n      = dataL(4);
+                                end
+                                if isequal(dataL(5),0)
+                                    hmsg = msgbox('XA cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.XA     = dataL(5);
+                                end
+                                if isequal(dataL(6),0)
+                                    hmsg = msgbox('XB cannot be 0!', 'VELAS reminder','help');
+                                    pause(0.5);
+                                    if ishandle(hmsg)
+                                        close(hmsg);
+                                    end
+                                else
+                                    KIC.XB     = dataL(6);
+                                end
+                        end
+                end
 
             elseif (~isempty(strfind(lower(tline),'avg ')) || ~isempty(strfind(lower(tline),'average ')))
                 avg = regexp(tline,'\ ','split');
@@ -778,6 +792,10 @@ Re.C            = C;
 Re.S            = S;
 Re.cryType      = cryType;
 Re.pressure     = pressure;
+Re.molarmass    = molarmass;
+Re.volume       = volume;
+Re.density      = density;
+Re.atomnum      = atomnum;
 Re.ntheta       = ntheta;
 Re.nphi         = nphi;
 Re.nchi         = nchi;
@@ -788,6 +806,13 @@ Re.planeSph     = planeSph;
 Re.planeAng     = planeAng;
 Re.planeC       = planeC;
 Re.planeS       = planeS;
+
+if KIC.V0 == 0
+    if density ~= 1 && volume ~= 1
+        KIC.V0 = volume/atomnum;
+    end
+end
+
 Re.KIC          = KIC;
 Re.avgout       = avgout;
 Re.dounitsph    = dounitsph;

@@ -13,24 +13,24 @@ else
     len             = length(filen);
     for k = 1:len
         fname           = filen{k};    
-        matnameInput    = strrep(fname,'.txt','Input.mat');
-        matnameOutput   = strrep(fname,'.txt','Output.mat');
+        % matnameInput    = strrep(fname,'.txt','Input.mat');
+        % matnameOutput   = strrep(fname,'.txt','Output.mat');
         filename        = strcat(pathn,fname);
-        inmatname       = strcat(pathn,matnameInput);
-        outmatname      = strcat(pathn,matnameOutput);
+        % inmatname       = strcat(pathn,matnameInput);
+        % outmatname      = strcat(pathn,matnameOutput);
         try % If VELAS is not installed, it will be installed automatically using install_VELAS function.
             R               = initOutput();
         catch
             install_VELAS;
-            pause(1);
+            pause(0.5);
             R               = initOutput();
         end
         inputData       = getInput(filename);
         % save input
-        save(inmatname,'inputData'); 
-        outputData = checkStability(inputData,R);
+        % save(inmatname,'inputData'); 
+        checkStability(inputData,R);
         % save output
-        save(outmatname,'outputData'); 
+        % save(outmatname,'outputData'); 
     end 
 end
 
