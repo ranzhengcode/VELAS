@@ -34,7 +34,7 @@
 ### Installation Scheme A
 - (1) install VELAS using **pkg** command in GNU Octave **command windows** as following:
 ```
-pkg install "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.5.tar.gz"
+pkg install "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.6.tar.gz"
 ```
 - (2) And then using **pkg load velas** to load VELAS.
 - (3) Type **velasGUI** to run VELAS.
