@@ -1,4 +1,16 @@
+VELAS v1.0.6 [05/09/2023]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
+**Fix bugs and performance enhancements
+**Allow user to add density, volume and number of atoms of crystal to calculate other
+  related properties.
+**Update the logo information
+**rearrange the GUI of VELAS 
+**Supporting the calculation of average sound velocity/Fracture Toughness
+  /Debye temperature/Heat Capacity/Melting temperature/Thermal expansion
+  /Minimum thermal conductivity using VRH
+
 VELAS v1.0.5 [21/04/2023]: Bug Fixes and improvements
+-----------------------------------------------------------------------------------------
 **Fix bugs in install_VELAS.m and uninstall_VELAS.m
 **Rename LICENSE.md to COPYING in order to submit to gnu-octave/packages.
 **Add DESCRIPTION file
