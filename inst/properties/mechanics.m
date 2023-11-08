@@ -493,8 +493,8 @@ if Pro(1,1)
 %     Emax                   = mean(-Emax);
 
     Emin                   = min(tmpE);
-    EminTheta              = theta(abs(E-Emax) <= teps);
-    EminPhi                = phi(abs(E-Emax) <= teps);
+    EminTheta              = theta(abs(E-Emin) <= teps);
+    EminPhi                = phi(abs(E-Emin) <= teps);
     Ehklmin                = dir2Vec(EminTheta,EminPhi);
 
     Ehklmin                = set2zeros(Ehklmin,teps);
@@ -1471,7 +1471,7 @@ for pk = 1:lenC
 %         E2dmax                   = mean(-E2dmax);
 
         E2dmin                   = min(E2d);
-        E2dminTheta              = theta2d(E2d == E2dmin);
+        E2dminTheta              = theta2d(abs(E2d -E2dmin) <= teps);
 %         [E2dmin,E2dminTheta,~]   = maxminSearch(E2dminTheta,@(x) calcYoung(x,S,ntheta2d,planeC,'2D'),teps);
         E2dminTheta              = unique(E2dminTheta);
         E2dminXY                 = dir2Vec2d(E2dminTheta);
@@ -1717,7 +1717,7 @@ for pk = 1:lenC
         P2dmax                    = getMaxMinNeg(P2d,'max')';
 
         P2dmmax                   = max(P2d(:));
-        P2dmaxTheta               = theta2d(P2dmax == P2dmmax);
+        P2dmaxTheta               = theta2d(abs(P2dmax - P2dmmax) <= teps);
 %         [P2dmmax,P2dmaxTheta,~]   = maxminSearch(P2dmaxTheta,@(x) -calcPoisson(x,nchi,S11112d(P2dmax == P2dmmax),S,ntheta2d,planeC,'max','2D'),teps);
         P2dmaxTheta               = unique(P2dmaxTheta);
         P2dmaxXY                  = dir2Vec2d(P2dmaxTheta);
@@ -1725,7 +1725,7 @@ for pk = 1:lenC
 
         P2dminp                   = getMaxMinNeg(P2d,'min')';
         P2dmminp                  = min(P2dminp(:));
-        P2dminpTheta              = theta2d(P2dminp == P2dmminp);
+        P2dminpTheta              = theta2d(abs(P2dminp - P2dmminp) <= teps);
 %         [P2dmminp,P2dminpTheta,~] = maxminSearch(P2dminpTheta,@(x) calcPoisson(x,nchi,S11112d(P2dminp == P2dmminp),S,ntheta2d,planeC,'min','2D'),teps);
         P2dminpTheta               = unique(P2dminpTheta);
         P2dminpXY                 = dir2Vec2d(P2dminpTheta);
@@ -1750,7 +1750,7 @@ for pk = 1:lenC
             P2dminn                   = getMaxMinNeg(P2d,'neg')';
 
             P2dmminn                  = max(P2dminn);
-            P2dminnTheta              = theta2d(P2dminn == P2dmminn);
+            P2dminnTheta              = theta2d(abs(P2dminn - P2dmminn) <= teps);
 %             [P2dmminn,P2dminnTheta,~] = maxminSearch(P2dminnTheta,@(x) -calcPoisson(x,nchi,S11112d(P2dminn == P2dmminn),S,ntheta2d,planeC,'neg','2D'),teps);
             P2dminnTheta              = unique(P2dminnTheta);
             P2dminnXY                 = dir2Vec2d(P2dminnTheta);
@@ -1853,14 +1853,14 @@ for pk = 1:lenC
 
         % calculating the maximum and minimum of Bulk Modulus and its directions.
         B2dmax                   = max(B2d);
-        B2dmaxTheta              = theta2d(B2d == B2dmax);
+        B2dmaxTheta              = theta2d(abs(B2d - B2dmax) <= teps);
 %         [B2dmax,B2dmaxTheta,~]   = maxminSearch(B2dmaxTheta,@(x) -calcBulk(x,S,ntheta2d,planeC,'2D'),teps);
         B2dmaxTheta              = unique(B2dmaxTheta);
         B2dmaxXY                 = dir2Vec2d(B2dmaxTheta);
 %         B2dmax                   = mean(-B2dmax);
 
         B2dmin                   = min(B2d);
-        B2dminTheta              = theta2d(B2d == B2dmin);
+        B2dminTheta              = theta2d(abs(B2d - B2dmin) <= teps);
 %         [B2dmin,B2dminTheta,~]   = maxminSearch(B2dminTheta,@(x) calcBulk(x,S,ntheta2d,planeC,'2D'),teps);
         B2dminTheta              = unique(B2dminTheta);
         B2dminXY                 = dir2Vec2d(B2dminTheta);
@@ -1924,12 +1924,12 @@ for pk = 1:lenC
 
             Pr2dmax                = max(Pr2d);
             Pr2dmmax               = max(Pr2dmax(:));
-            Pr2dmaxTheta           = theta2d(Pr2dmax == Pr2dmmax);
+            Pr2dmaxTheta           = theta2d(abs(Pr2dmax - Pr2dmmax) <= teps);
             Pr2dmaxXY              = dir2Vec2d(Pr2dmaxTheta);
 
             Pr2dmin                = min(Pr2d);
             Pr2dmmin               = min(Pr2dmin(:));
-            Pr2dminTheta           = theta2d(Pr2dmin == Pr2dmmin);
+            Pr2dminTheta           = theta2d(abs(Pr2dmin - Pr2dmmin) <= teps);
             Pr2dminXY              = dir2Vec2d(Pr2dminTheta);
 
             % save 2D Pugh ratio in .dat file, first column is angle and second column is maximum, minimum, average Pugh ratio.
@@ -2020,12 +2020,12 @@ for pk = 1:lenC
 
             Hv2dmax                = max(Hv2d);
             Hv2dmmax               = max(Hv2dmax(:));
-            Hv2dmaxTheta           = theta2d(Hv2dmax == Hv2dmmax);
+            Hv2dmaxTheta           = theta2d(abs(Hv2dmax - Hv2dmmax) <= teps);
             Hv2dmaxXY              = dir2Vec2d(Hv2dmaxTheta);
 
             Hv2dmin                = min(Hv2d);
             Hv2dmmin               = min(Hv2dmin(:));
-            Hv2dminTheta           = theta2d(Hv2dmin == Hv2dmmin);
+            Hv2dminTheta           = theta2d(abs(Hv2dmin - Hv2dmmin) <= teps);
             Hv2dminXY              = dir2Vec2d(Hv2dminTheta);
 
             % save 2D Vickers hardness in .dat file, first column is angle and second column is maximum, minimum, average Vickers hardness.
@@ -2123,12 +2123,12 @@ for pk = 1:lenC
 
             Kic2dmax                = max(Kic2d);
             Kic2dmmax               = max(Kic2dmax(:));
-            Kic2dmaxTheta           = theta2d(Kic2dmax == Kic2dmmax);
+            Kic2dmaxTheta           = theta2d(abs(Kic2dmax - Kic2dmmax) <= teps);
             Kic2dmaxXY              = dir2Vec2d(Kic2dmaxTheta);
 
             Kic2dmin                = min(Kic2d);
             Kic2dmmin               = min(Kic2dmin(:));
-            Kic2dminTheta           = theta2d(Kic2dmin == Kic2dmmin);
+            Kic2dminTheta           = theta2d(abs(Kic2dmin - Kic2dmmin) <= teps);
             Kic2dminXY              = dir2Vec2d(Kic2dminTheta);
 
             % save 2D Fracture Toughness in .dat file, first column is angle and second column is maximum, minimum, average Fracture Toughness.
@@ -2196,4 +2196,3 @@ pause(0.8);
 if ishandle(hmsg)
     close(hmsg);
 end
-
