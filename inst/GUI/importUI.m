@@ -67,17 +67,16 @@ else
     % Caculation Mode
     flag3d   = any(inputData.Pro(1,:));
     flag2d   = any(inputData.Pro(2,:));
-    flagboth = flag3d & flag2d;
-    if flagboth
-        % {'3D','2D','Both'}
-        set(VELAS.basepop,'Value',3);
-    else
-        if flag3d
+    flagtp = [num2str(flag3d),num2str(flag2d)];
+    switch(flagtp)
+        case '00'
             set(VELAS.basepop,'Value',1);
-        end
-        if flag2d
+        case '10'
             set(VELAS.basepop,'Value',2);
-        end
+        case '01'
+            set(VELAS.basepop,'Value',3);
+        case '11'
+            set(VELAS.basepop,'Value',4);
     end
 
     % Structure under Pressure (GPa)
