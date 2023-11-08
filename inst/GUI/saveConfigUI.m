@@ -172,13 +172,15 @@ if ~isempty(C)
             proKIC   = 0;
         end
         switch(basepop)
-            case 1    % 3D
+            case 1    % VRH
+                Pro      = zeros(2,8);
+            case 2    % 3D
                 Pro      = zeros(2,8);
                 Pro(1,:) = [proE  proLC  proG  proP  proB  proPr  proHv  proKIC];
-            case 2    % 2D
+            case 3    % 2D
                 Pro      = zeros(2,8);
                 Pro(2,:) = [proE  proLC  proG  proP  proB  proPr  proHv  proKIC];
-            case 3    % both
+            case 4    % All
                 Pro(1,:) = [proE  proLC  proG  proP  proB  proPr  proHv  proKIC];
                 Pro(2,:) = Pro(1,:);
         end
