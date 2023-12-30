@@ -1,8 +1,3 @@
-<h4 align="center">Visitors :eyes:</h4>
-
-<p align="center"><img src="https://profile-counter.glitch.me/VELAS/count.svg" alt="BurpSuiteCN-Release :: Visitor's Count" />
- <img width=0 height=0 src="https://profile-counter.glitch.me/ranzhengcode/count.svg" alt="ranzhengcode:: Visitor's Count" />
-</p>
 
 <div align=center><img src="https://github.com/ranzhengcode/VELAS/blob/main/doc/VELAS_Logo.png" width="561" height="191"></img></div>
 
@@ -42,15 +37,7 @@ pkg install "https://github.com/ranzhengcode/VELAS/archive/refs/tags/v1.0.6.tar.
 ### Installation Scheme B
 - (1) Unzip the downloaded **VELAS** archive into any available path;  
 - (2) Run **install_VELAS** or **velasGUI**, VELAS will be automatically installed.
-### Installation Scheme C
-- (1) Unzip the downloaded **VELAS** archive into any available path;  
-- (2) Start **GNU Octave** and click on the **Edit** option in the menu bar;  
-- (3) Click on **Set Path** in the **Edit** drop-down box;  
-- (4) Click **Add Folder** in the **Set Path** dialog box;  
-- (5) Click on **Folder with Subfolders** in the **Add Folder** drop-down list box;  
-- (6) In the pop-up dialog box, find the path of the unpacked VELAS folder in **(1)**, and select the VELAS folder, then click **Choose**;  
-- (7) Click **Save** in the **Set Path** dialog box to complete the installation;
-- (8) **Enjoy**!
+### **Enjoy**!
 
 ## GET STARTED
 VELAS supports both **script** and **GUI** to run.  
