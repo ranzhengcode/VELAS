@@ -1,4 +1,4 @@
-VELAS-1.0.5
+VELAS-1.0.6
 ├─.hgignore
 ├─COPYING
 ├─DESCRIPTION
